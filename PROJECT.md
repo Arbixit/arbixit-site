@@ -28,11 +28,14 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
   skulle ensam äta upp privata kontots fria kvot. Kollsteget är helt
   deterministiskt (`scripts/mail-check.mjs`, inga AI-anrop); AI-steget körs
   endast vid ny post, får inga hemligheter och skriver bara åtgärdsfiler.
-  Svar/läst-markering/loggning sker deterministiskt (`scripts/mail-act.mjs`):
-  svar alltid via Graph "reply" (mottagare kan inte väljas av AI), fast
-  signatur, max 5 svar per körning, loopskydd mot egna svar och no-reply,
-  allt loggas till 00 Styrning. Styrs av "Mejlpolicy för digital
-  medarbetare" (05 For approval).
+  Svar/loggning sker deterministiskt (`scripts/mail-act.mjs`): svar alltid
+  via Graph "reply" (mottagare kan inte väljas av AI), fast signatur, max
+  5 svar per körning, loopskydd mot egna svar och no-reply, allt loggas
+  till 00 Styrning. Dubblettskydd: hanterade mejl bokförs som markörer i
+  mejlloggen innan svar skickas – nödvändigt eftersom appen saknar
+  Mail.ReadWrite (läst-markering är bäst-möjliga-försök tills den
+  behörigheten beviljas). Styrs av "Mejlpolicy för digital medarbetare"
+  (05 For approval).
 
 ## Struktur
 

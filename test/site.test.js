@@ -57,6 +57,13 @@ test('brevbäraren: workflow och scripts på plats', () => {
   }
 });
 
+test('brevbäraren: dubblettskyddets markörer tolkas korrekt', async () => {
+  const { hanteradeIdn } = await import('../scripts/graph.mjs');
+  const ids = hanteradeIdn('x\n<!-- hanterad: <a@b> -->\n| rad |\n<!-- hanterad: <c@d> -->\n');
+  assert.deepEqual([...ids], ['<a@b>', '<c@d>']);
+  assert.equal(hanteradeIdn(null).size, 0);
+});
+
 test('brevbäraren: inga mejladresser eller nycklar i klartext', () => {
   for (const f of ['graph.mjs', 'mail-check.mjs', 'mail-act.mjs']) {
     const s = readFileSync(join(root, 'scripts', f), 'utf8');

@@ -17,6 +17,9 @@ name: Brevbäraren
 #  - svar skickas deterministiskt av mail-act.mjs via Graph "reply": mottagaren
 #    kan aldrig väljas av AI, nya mejl kan inte skapas, signaturen läggs alltid
 #    på, max 5 svar per körning, allt loggas till 00 Styrning på SharePoint
+#  - dubblettskydd: hanterade mejl bokförs som markörer i mejlloggen INNAN
+#    svar skickas – samma mejl kan aldrig besvaras två gånger, även om
+#    läst-markeringen misslyckas (appen saknar i dag Mail.ReadWrite)
 on:
   schedule:
     - cron: '7,37 * * * *' # var 30:e minut, förskjutet från heltimmen (mindre kö hos GitHub)
