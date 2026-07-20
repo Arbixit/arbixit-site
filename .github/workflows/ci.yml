@@ -1,0 +1,19 @@
+name: CI
+
+# Bygg och test – ingen deploy. Pages-deploy aktiveras först efter
+# godkännande enligt mandatmodellen (DNS och livesättning är röda beslut).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test
+        run: npm test

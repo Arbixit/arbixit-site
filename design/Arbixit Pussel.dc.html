@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:oklch(0.16 0.015 265)}
+a{color:oklch(0.80 0.13 255);text-decoration:none}
+a:hover{color:oklch(0.88 0.10 255)}
+</style>
+</helmet>
+<div style="{{ rootStyle }}">
+  <header style="display:flex;align-items:center;justify-content:space-between;padding:20px clamp(20px,4vw,44px);border-bottom:1px solid oklch(0.30 0.02 265 / 0.6)">
+    <div style="display:flex;align-items:center;gap:13px">
+      <img src="./arbore_blackwhite-mrrh4uun-sswu.png" alt="Arbixit" style="width:42px;height:42px;padding:6px;border-radius:50%;background:oklch(0.97 0.01 90);box-shadow:0 2px 10px oklch(0 0 0 / 0.35)">
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:22px;letter-spacing:.01em;color:oklch(0.97 0.008 265)">Arbixit</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="display:flex;background:oklch(0.22 0.02 265);border:1px solid oklch(0.32 0.02 265);border-radius:11px;padding:3px;gap:2px">
+        <button onClick="{{ setGrid }}" style="{{ gridBtn }}">{{ t.grid }}</button>
+        <button onClick="{{ setRadial }}" style="{{ radialBtn }}">{{ t.radial }}</button>
+      </div>
+      <div style="display:flex;background:oklch(0.22 0.02 265);border:1px solid oklch(0.32 0.02 265);border-radius:11px;padding:3px;gap:2px">
+        <button onClick="{{ setSv }}" style="{{ svBtn }}">SV</button>
+        <button onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:1240px;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(20px,4vw,44px) 40px">
+    <div style="text-align:center;max-width:660px;margin:0 auto 8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:oklch(0.72 0.11 265)">{{ t.eyebrow }}</div>
+      <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,50px);line-height:1.05;letter-spacing:-.02em;color:oklch(0.98 0.006 265);margin:14px 0 0">{{ t.title }}</h1>
+      <p style="font-size:clamp(15px,1.6vw,18px);line-height:1.55;color:oklch(0.74 0.015 265);margin:16px auto 0;max-width:540px;text-wrap:pretty">{{ t.sub }}</p>
+    </div>
+
+    <div style="display:flex;gap:clamp(16px,3vw,40px);align-items:center;justify-content:center;margin-top:10px;flex-wrap:wrap">
+      <div style="position:relative;flex:1 1 520px;max-width:660px;min-width:300px">
+        <div style="position:relative;width:100%;aspect-ratio:1;margin:0 auto">
+          <div style="{{ stageStyle }}">
+            <svg viewBox="0 0 800 800" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
+              <defs>
+                <linearGradient id="arbSheen" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#ffffff" stop-opacity="0.20"></stop>
+                  <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.02"></stop>
+                  <stop offset="1" stop-color="#000000" stop-opacity="0.12"></stop>
+                </linearGradient>
+              </defs>
+              <sc-for list="{{ pieces }}" as="p" hint-placeholder-count="9">
+                <path d="{{ p.d }}" fill="{{ p.color }}" stroke="{{ p.stroke }}" stroke-width="2.5" opacity="{{ p.opacity }}" onClick="{{ p.onClick }}" style="cursor:pointer;transition:opacity .45s ease"></path>
+                <path d="{{ p.d }}" fill="url(#arbSheen)" opacity="{{ p.opacity }}" onClick="{{ p.onClick }}" style="cursor:pointer;pointer-events:none;transition:opacity .45s ease"></path>
+              </sc-for>
+            </svg>
+            <sc-for list="{{ pieces }}" as="p" hint-placeholder-count="9">
+              <div style="{{ p.labelStyle }}" style-hover="transform:translate(-50%,-50%) scale(1.06)" onClick="{{ p.onClick }}">
+                <sc-if value="{{ p.isCenter }}" hint-placeholder-val="{{ true }}">
+                  <div style="width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:oklch(0.97 0.01 90);border:1.5px solid oklch(1 0 0 / 0.6);box-shadow:0 4px 16px oklch(0 0 0 / 0.3)">
+                    <img src="./arbore_blackwhite-mrrh4uun-sswu.png" alt="" style="width:40px;height:40px">
+                  </div>
+                </sc-if>
+                <sc-if value="{{ p.isApp }}" hint-placeholder-val="{{ true }}">
+                  <sc-if value="{{ p.hasIcon }}" hint-placeholder-val="{{ false }}">
+                    <img src="{{ p.icon }}" alt="" style="width:44px;height:44px;border-radius:13px;object-fit:cover;background:oklch(0.97 0.01 90);border:1.5px solid oklch(1 0 0 / 0.4)">
+                  </sc-if>
+                  <sc-if value="{{ p.noIcon }}" hint-placeholder-val="{{ true }}">
+                    <div style="width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:oklch(1 0 0 / 0.16);border:1.5px solid oklch(1 0 0 / 0.4);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:oklch(1 0 0 / 0.95)">{{ p.mono }}</div>
+                  </sc-if>
+                </sc-if>
+                <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:oklch(1 0 0 / 0.96);line-height:1.15;text-shadow:0 1px 4px oklch(0 0 0 / 0.35)">{{ p.name }}</div>
+                <div style="display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:oklch(1 0 0 / 0.82)">
+                  <span style="{{ p.dotStyle }}"></span>{{ p.envLabel }}
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="{{ hintStyle }}">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.66 0.015 265)">{{ t.hint }}</span>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+        <aside style="flex:0 1 372px;min-width:300px;background:oklch(0.20 0.018 265);border:1px solid oklch(0.32 0.02 265);border-radius:22px;overflow:hidden;box-shadow:0 30px 70px -30px oklch(0 0 0 / 0.7)">
+          <div style="{{ accentBar }}"></div>
+          <div style="padding:24px 24px 26px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+              <div style="display:flex;align-items:center;gap:13px">
+                <div style="{{ detailChip }}">
+                  <sc-if value="{{ detail.isCenter }}" hint-placeholder-val="{{ false }}"><img src="arbixit-logo.svg" alt="" style="width:30px;height:30px;padding:4px;border-radius:50%;background:oklch(0.97 0.01 90)"></sc-if>
+                  <sc-if value="{{ detail.hasIcon }}" hint-placeholder-val="{{ false }}"><img src="{{ detail.icon }}" alt="" style="width:100%;height:100%;border-radius:inherit;object-fit:cover"></sc-if>
+                  <sc-if value="{{ detail.noIcon }}" hint-placeholder-val="{{ true }}"><span>{{ detail.mono }}</span></sc-if>
+                </div>
+                <div>
+                  <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:oklch(0.98 0.006 265);line-height:1.1">{{ detail.name }}</div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:oklch(0.70 0.02 265);margin-top:3px">{{ detail.tag }}</div>
+                </div>
+              </div>
+              <button onClick="{{ close }}" style="flex:none;width:32px;height:32px;border-radius:9px;border:1px solid oklch(0.34 0.02 265);background:oklch(0.24 0.02 265);color:oklch(0.8 0.02 265);cursor:pointer;font-size:16px;line-height:1">✕</button>
+            </div>
+
+            <div style="{{ envBadge }}">{{ detail.envLabel }}</div>
+
+            <p style="font-size:15px;line-height:1.6;color:oklch(0.82 0.012 265);margin-top:16px;text-wrap:pretty">{{ detail.blurb }}</p>
+
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.64 0.015 265);margin:22px 0 12px">{{ t.features }}</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ detail.features }}" as="f" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:11px">
+                  <span style="{{ detail.bullet }}"></span>
+                  <span style="font-size:14.5px;color:oklch(0.9 0.01 265)">{{ f }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <a href="{{ detail.url }}" target="_blank" rel="noopener" style="{{ ctaStyle }}">{{ detail.cta }} <span style="font-size:15px">↗</span></a>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:oklch(0.58 0.015 265);margin-top:12px;text-align:center;word-break:break-all">{{ detail.host }}</div>
+          </div>
+        </aside>
+      </sc-if>
+    </div>
+
+    <div style="text-align:center;margin-top:clamp(24px,4vw,44px);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+      <span style="width:8px;height:8px;border-radius:50%;background:oklch(0.72 0.14 150)"></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;color:oklch(0.6 0.015 265)">{{ t.growth }}</span>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:840},&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;grid&quot;,&quot;radial&quot;],&quot;default&quot;:&quot;grid&quot;,&quot;tsType&quot;:&quot;'grid'|'radial'&quot;,&quot;section&quot;:&quot;Pussel&quot;,&quot;label&quot;:&quot;Layout&quot;},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sv&quot;,&quot;en&quot;],&quot;default&quot;:&quot;sv&quot;,&quot;tsType&quot;:&quot;'sv'|'en'&quot;,&quot;section&quot;:&quot;Innehåll&quot;,&quot;label&quot;:&quot;Språk&quot;},&quot;glow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Pussel&quot;,&quot;label&quot;:&quot;Glöd &amp; skuggor&quot;}}">
+class Component extends DCLogic {
+  state = { sel: null, layout: null, lang: null };
+
+  componentDidMount() {
+    this._esc = (e) => { if (e.key === 'Escape') this.setState({ sel: null }); };
+    window.addEventListener('keydown', this._esc);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this._esc); }
+
+  pick(id) { this.setState((s) => ({ sel: s.sel === id ? null : id })); }
+
+  edge(x1, y1, x2, y2, sign, horiz) {
+    if (!sign) return `L ${x2} ${y2}`;
+    const r = 27, cx = (x1 + x2) / 2, cy = (y1 + y2) / 2;
+    const ux = Math.sign(x2 - x1), uy = Math.sign(y2 - y1);
+    const nx = horiz ? 0 : sign, ny = horiz ? sign : 0;
+    const P1x = cx - ux * r, P1y = cy - uy * r, P2x = cx + ux * r, P2y = cy + uy * r;
+    const Ax = cx + nx * r, Ay = cy + ny * r, c = 0.5523 * r;
+    return `L ${P1x} ${P1y} C ${P1x + nx * c} ${P1y + ny * c} ${Ax - ux * c} ${Ay - uy * c} ${Ax} ${Ay}`
+      + ` C ${Ax + ux * c} ${Ay + uy * c} ${P2x + nx * c} ${P2y + ny * c} ${P2x} ${P2y} L ${x2} ${y2}`;
+  }
+  piecePath(x0, y0, s, sg) {
+    const x1 = x0 + s, y1 = y0 + s;
+    return `M ${x0} ${y0} `
+      + this.edge(x0, y0, x1, y0, sg.t, true) + ' '
+      + this.edge(x1, y0, x1, y1, sg.r, false) + ' '
+      + this.edge(x1, y1, x0, y1, sg.b, true) + ' '
+      + this.edge(x0, y1, x0, y0, sg.l, false) + ' Z';
+  }
+
+  renderVals() {
+    const lang = this.state.lang ?? this.props.lang ?? 'sv';
+    const layout = this.state.layout ?? this.props.layout ?? 'grid';
+    const glow = this.props.glow ?? true;
+    const sel = this.state.sel;
+
+    const t = {
+      sv: { eyebrow: 'En plattform · många appar', title: 'Ett pussel av appar', sub: 'Varje app vi bygger är en pusselbit som passar in i Arbixit-plattformen. Klicka på en bit för att zooma in.', hint: 'Klicka på en pusselbit', grid: 'Rutnät', radial: 'Radiell', features: 'Nyckelfunktioner', growth: 'Pusslet växer när nya appar tillkommer', cta: 'Öppna appen' },
+      en: { eyebrow: 'One platform · many apps', title: 'A puzzle of apps', sub: 'Every app we build is a puzzle piece that clicks into the Arbixit platform. Tap a piece to zoom in.', hint: 'Click a puzzle piece', grid: 'Grid', radial: 'Radial', features: 'Key features', growth: 'The puzzle grows as new apps arrive', cta: 'Open the app' }
+    }[lang];
+
+    const H = (hue) => `oklch(0.70 0.145 ${hue})`;
+    const HS = (hue) => `oklch(0.42 0.11 ${hue})`;
+
+    const CENTER = {
+      id: 'c', hue: 265, mono: 'Ax',
+      name: 'Arbixit', env: 'core',
+      url: 'https://www.arbixit.se',
+      tag: { sv: 'Plattformen', en: 'The platform' },
+      blurb: { sv: 'Vi tar fram appar för olika verksamheter. Varje app delar inloggning och datamodell — och blir en pusselbit i en större helhet.', en: 'We build apps for all kinds of businesses. Each app shares sign-in and data model — and becomes a piece of a larger whole.' },
+      features: { sv: ['Gemensam inloggning', 'Delad datamodell', 'Skräddarsytt per verksamhet', 'Byggs på efter hand'], en: ['Shared sign-in', 'Shared data model', 'Tailored per business', 'Grows over time'] }
+    };
+
+    const APPS = [
+      { id: 'crm', hue: 250, mono: 'Cr', name: 'CRM', env: 'stage', url: 'https://stage.crm.arbixit.se',
+        tag: { sv: 'Kundregister & pipeline', en: 'CRM & pipeline' },
+        blurb: { sv: 'Samla kontakter, affärer och uppföljning på ett och samma ställe.', en: 'Contacts, deals and follow-ups gathered in one place.' },
+        features: { sv: ['Kontakt- & företagsregister', 'Visuell affärspipeline', 'Aktiviteter & påminnelser', 'Rapporter & prognoser'], en: ['Contact & company records', 'Visual deal pipeline', 'Activities & reminders', 'Reports & forecasts'] } },
+      { id: 'fineprint', hue: 292, mono: 'Fp', name: 'Fineprint', env: 'stage', url: 'https://stage.fineprint.arbixit.se',
+        tag: { sv: 'Dokument & avtal', en: 'Documents & contracts' },
+        blurb: { sv: 'Skapa, granska och signera dokument utifrån färdiga mallar.', en: 'Create, review and sign documents from ready-made templates.' },
+        features: { sv: ['Dokumentmallar', 'Versionshantering', 'PDF-generering', 'Digital signering'], en: ['Document templates', 'Version history', 'PDF generation', 'Digital signing'] } },
+      { id: 'planttools', hue: 150, mono: 'Pt', name: 'PlantTools', env: 'prod', url: 'https://planttools.arbixit.se',
+        tag: { sv: 'Drift & anläggning', en: 'Operations & assets' },
+        blurb: { sv: 'Håll koll på anläggningar, sensorer och underhåll i realtid.', en: 'Keep track of assets, sensors and maintenance in real time.' },
+        features: { sv: ['Live sensordata', 'Underhållsscheman', 'Digitala checklistor', 'Larm & notiser'], en: ['Live sensor data', 'Maintenance schedules', 'Digital checklists', 'Alerts & notifications'] } },
+      { id: 'postiljon', hue: 72, mono: 'Po', name: 'Postiljon', env: 'stage', url: 'https://stage.postiljon.arbixit.se',
+        tag: { sv: 'Utskick & notiser', en: 'Messaging & notifications' },
+        blurb: { sv: 'Skicka e-post och SMS med mallar och robust köhantering.', en: 'Send email and SMS with templates and robust queueing.' },
+        features: { sv: ['E-post & SMS', 'Meddelandemallar', 'Köhantering', 'Leveransstatus'], en: ['Email & SMS', 'Message templates', 'Queue handling', 'Delivery status'] } },
+      { id: 'citadel', hue: 195, mono: 'Ci', name: 'Citadel', env: 'stage', url: 'https://stage.citadel.arbixit.se',
+        tag: { sv: 'Identitet & åtkomst', en: 'Identity & access' },
+        blurb: { sv: 'Central inloggning, behörigheter och full revisionslogg.', en: 'Central sign-in, permissions and a full audit log.' },
+        features: { sv: ['Single sign-on', 'Roller & behörigheter', 'Revisionslogg', 'Hemlighetshantering'], en: ['Single sign-on', 'Roles & permissions', 'Audit log', 'Secrets management'] } },
+      { id: 'rocketchat', hue: 312, mono: 'Rc', name: 'Rocketchat', env: 'stage', url: 'https://chat.florami.se',
+        tag: { sv: 'Teamchatt', en: 'Team chat' },
+        blurb: { sv: 'Kanaler, direktmeddelanden och integrationer för teamet.', en: 'Channels, direct messages and integrations for the team.' },
+        features: { sv: ['Kanaler & trådar', 'Direktmeddelanden', 'Fildelning', 'Integrationer'], en: ['Channels & threads', 'Direct messages', 'File sharing', 'Integrations'] } },
+      { id: 'showroom', hue: 350, mono: 'Sr', name: 'Showroom', env: 'stage', url: 'https://showroom.florami.se',
+        tag: { sv: 'Produktshowroom', en: 'Product showroom' },
+        blurb: { sv: 'Visa upp produkter och media med delbara länkar.', en: 'Showcase products and media with shareable links.' },
+        features: { sv: ['Produktkatalog', 'Media & bilder', 'Delningslänkar', 'Varumärkning'], en: ['Product catalog', 'Media & images', 'Shareable links', 'Branding'] } },
+      { id: 'tasks', hue: 30, mono: 'Tm', name: 'Task Manager', env: 'stage', url: 'https://stage.simple-task-manager.arbixit.se',
+        tag: { sv: 'Uppgiftshantering', en: 'Task management' },
+        blurb: { sv: 'Planera uppgifter på tavlor med deadlines och tilldelning.', en: 'Plan tasks on boards with deadlines and assignments.' },
+        features: { sv: ['Uppgifter & tavlor', 'Deadlines', 'Tilldelning', 'Statusflöden'], en: ['Tasks & boards', 'Deadlines', 'Assignments', 'Status flows'] } }
+    ];
+
+    const envMeta = {
+      prod: { label: 'PROD', dot: 'oklch(0.75 0.16 150)' },
+      stage: { label: 'STAGE', dot: 'oklch(0.80 0.15 80)' },
+      core: { label: 'PLATFORM', dot: 'oklch(0.85 0.10 265)' }
+    };
+
+    // ---- geometry ----
+    const S = 190, OX = 115, OY = 115;
+    const V = [[1, -1], [-1, 1], [1, 1]];
+    const H2 = [[-1, 1, 1], [1, -1, -1]];
+    const cellSigns = (i, j) => ({
+      t: i === 0 ? 0 : H2[i - 1][j],
+      b: i === 2 ? 0 : H2[i][j],
+      l: j === 0 ? 0 : V[i][j - 1],
+      r: j === 2 ? 0 : V[i][j]
+    });
+    const gridCells = [[0, 0], [0, 1], [0, 2], [1, 0], [1, 2], [2, 0], [2, 1], [2, 2]];
+    const RS = [
+      { t: -1, r: 1, b: 1, l: -1 }, { t: -1, r: -1, b: 1, l: 1 }, { t: 1, r: -1, b: -1, l: 1 }, { t: 1, r: 1, b: -1, l: -1 },
+      { t: -1, r: 1, b: 1, l: -1 }, { t: -1, r: -1, b: 1, l: 1 }, { t: 1, r: -1, b: -1, l: 1 }, { t: 1, r: 1, b: -1, l: -1 }
+    ];
+
+    const geom = (idx, isCenter) => {
+      if (layout === 'grid') {
+        if (isCenter) { const x0 = OX + 190, y0 = OY + 190; return { d: this.piecePath(x0, y0, S, cellSigns(1, 1)), cx: x0 + 95, cy: y0 + 95 }; }
+        const [i, j] = gridCells[idx]; const x0 = OX + j * S, y0 = OY + i * S;
+        return { d: this.piecePath(x0, y0, S, cellSigns(i, j)), cx: x0 + 95, cy: y0 + 95 };
+      }
+      // radial
+      if (isCenter) { const sz = 176; const cx = 400, cy = 400; return { d: this.piecePath(cx - sz / 2, cy - sz / 2, sz, { t: -1, r: 1, b: 1, l: -1 }), cx, cy }; }
+      const sz = 152, R = 252; const ang = (-90 + idx * 45) * Math.PI / 180;
+      const cx = 400 + R * Math.cos(ang), cy = 400 + R * Math.sin(ang);
+      return { d: this.piecePath(cx - sz / 2, cy - sz / 2, sz, RS[idx]), cx, cy };
+    };
+
+    // Drop an app icon at ./icons/<id>.(svg|png) and add it here to show it as the avatar.
+    const ICONS = {
+      // crm: 'icons/crm.svg',
+      // fineprint: 'icons/fineprint.svg',
+      planttools: 'icons/planttools.png',
+      // postiljon: 'icons/postiljon.svg',
+      citadel: 'icons/citadel.png',
+      // rocketchat: 'icons/rocketchat.svg',
+      // showroom: 'icons/showroom.svg',
+      tasks: 'icons/tasks.png',
+    };
+
+    const build = (data, idx, isCenter) => {
+      const g = geom(idx, isCenter);
+      const em = envMeta[data.env];
+      const selected = sel === data.id;
+      const opacity = sel === null ? 1 : (selected ? 1 : 0.14);
+      const cxP = (g.cx / 800 * 100), cyP = (g.cy / 800 * 100);
+      return {
+        id: data.id, d: g.d, cx: g.cx, cy: g.cy, cxN: cxP, cyN: cyP,
+        color: H(data.hue), stroke: HS(data.hue),
+        mono: data.mono, name: data.name, isCenter, isApp: !isCenter,
+        icon: ICONS[data.id] || '', hasIcon: !isCenter && !!ICONS[data.id], noIcon: !isCenter && !ICONS[data.id],
+        envLabel: em.label, selected, opacity,
+        onClick: () => this.pick(data.id),
+        dotStyle: { width: '7px', height: '7px', borderRadius: '50%', background: em.dot, display: 'inline-block' },
+        labelStyle: {
+          position: 'absolute', left: cxP + '%', top: cyP + '%', transform: 'translate(-50%,-50%)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
+          cursor: 'pointer', opacity, transition: 'opacity .45s ease, transform .3s ease',
+          width: '132px', textAlign: 'center', zIndex: selected ? 4 : 2, userSelect: 'none'
+        }
+      };
+    };
+
+    const pieces = [build(CENTER, 0, true)].concat(APPS.map((a, i) => build(a, i, false)));
+
+    // ---- zoom transform ----
+    let stageStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%', transition: 'transform .6s cubic-bezier(.22,.9,.28,1)', transformOrigin: '50% 50%' };
+    if (sel !== null) {
+      const sp = pieces.find((p) => p.selected);
+      if (sp) {
+        const K = layout === 'grid' ? 1.9 : 1.75;
+        stageStyle.transform = `translate(${50 - sp.cxN}%, ${50 - sp.cyN}%) scale(${K})`;
+        stageStyle.transformOrigin = `${sp.cxN}% ${sp.cyN}%`;
+      }
+    }
+
+    // ---- detail ----
+    let detail = null;
+    const selData = sel === 'c' ? CENTER : APPS.find((a) => a.id === sel);
+    if (selData) {
+      const em = envMeta[selData.env];
+      detail = {
+        name: selData.name, mono: selData.mono, isCenter: sel === 'c', isApp: sel !== 'c',
+        icon: ICONS[selData.id] || '', hasIcon: sel !== 'c' && !!ICONS[selData.id], noIcon: sel !== 'c' && !ICONS[selData.id],
+        color: H(selData.hue), tag: selData.tag[lang], blurb: selData.blurb[lang],
+        features: selData.features[lang], url: selData.url, cta: t.cta,
+        host: selData.url.replace(/^https?:\/\//, ''), envLabel: em.label, dot: em.dot,
+        bullet: { width: '9px', height: '9px', borderRadius: '3px', background: H(selData.hue), flex: 'none' }
+      };
+    }
+
+    const tabBtn = (active) => ({
+      border: 'none', cursor: 'pointer', padding: '7px 14px', borderRadius: '8px',
+      fontFamily: "'Space Grotesk',sans-serif", fontSize: '13px', fontWeight: 600,
+      background: active ? 'oklch(0.34 0.06 265)' : 'transparent',
+      color: active ? 'oklch(0.98 0.006 265)' : 'oklch(0.66 0.015 265)', transition: 'all .2s'
+    });
+
+    return {
+      t: t, pieces, stageStyle, detail, hasSel: sel !== null,
+      rootStyle: {
+        minHeight: '100vh', color: 'oklch(0.95 0.008 265)', fontFamily: "'Instrument Sans',sans-serif",
+        background: glow
+          ? 'radial-gradient(55% 45% at 18% 8%, oklch(0.34 0.10 265 / 0.40), transparent 60%), radial-gradient(50% 50% at 88% 16%, oklch(0.34 0.10 320 / 0.30), transparent 60%), radial-gradient(60% 60% at 50% 108%, oklch(0.32 0.09 200 / 0.28), transparent 60%), oklch(0.16 0.015 265)'
+          : 'oklch(0.16 0.015 265)'
+      },
+      hintStyle: { textAlign: 'center', marginTop: '6px', opacity: sel === null ? 1 : 0, transition: 'opacity .3s', height: '18px' },
+      accentBar: { height: '6px', background: detail ? detail.color : 'transparent' },
+      detailChip: {
+        width: '48px', height: '48px', borderRadius: '14px', flex: 'none', display: 'grid', placeItems: 'center',
+        background: detail ? detail.color : 'transparent', color: '#fff',
+        fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '18px',
+        boxShadow: detail ? `0 8px 22px -6px ${detail.color}` : 'none'
+      },
+      envBadge: detail ? {
+        display: 'inline-flex', alignItems: 'center', gap: '7px', marginTop: '16px',
+        padding: '5px 11px', borderRadius: '999px', border: '1px solid oklch(0.34 0.02 265)',
+        background: 'oklch(0.24 0.02 265)', fontFamily: "'JetBrains Mono',monospace", fontSize: '11px',
+        letterSpacing: '.1em', color: 'oklch(0.82 0.02 265)',
+        boxShadow: `inset 6px 0 0 -3px ${detail.dot}`
+      } : {},
+      ctaStyle: detail ? {
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '24px',
+        padding: '13px', borderRadius: '13px', background: detail.color, color: 'oklch(0.16 0.02 265)',
+        fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '15px'
+      } : {},
+      gridBtn: tabBtn(layout === 'grid'), radialBtn: tabBtn(layout === 'radial'),
+      svBtn: tabBtn(lang === 'sv'), enBtn: tabBtn(lang === 'en'),
+      setGrid: () => this.setState({ layout: 'grid', sel: null }),
+      setRadial: () => this.setState({ layout: 'radial', sel: null }),
+      setSv: () => this.setState({ lang: 'sv' }),
+      setEn: () => this.setState({ lang: 'en' }),
+      close: () => this.setState({ sel: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

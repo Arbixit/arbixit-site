@@ -1,0 +1,13 @@
+{
+  "name": "arbixit-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "arbixit.se – statisk sajt som bygger sig själv från GitHub-dashboarden",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
