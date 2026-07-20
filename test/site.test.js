@@ -46,3 +46,21 @@ test('designunderlaget ligger orört i design/', () => {
 test('inga hemligheter i sajtfilerna', () => {
   assert.ok(!/api[_-]?key|secret|password|ghp_|gho_/i.test(html));
 });
+
+test('brevbäraren: workflow och scripts på plats', () => {
+  const wf = readFileSync(join(root, '.github', 'workflows', 'brevbararen.yml'), 'utf8');
+  assert.ok(wf.includes("cron: '7,37 * * * *'"), 'cron var 30:e minut');
+  assert.ok(wf.includes('mail-check.mjs') && wf.includes('mail-act.mjs'));
+  assert.ok(wf.includes("aibehov != '0'"), 'AI-steget grindas på aibehov');
+  for (const f of ['graph.mjs', 'mail-check.mjs', 'mail-act.mjs']) {
+    assert.ok(existsSync(join(root, 'scripts', f)), `saknar scripts/${f}`);
+  }
+});
+
+test('brevbäraren: inga mejladresser eller nycklar i klartext', () => {
+  for (const f of ['graph.mjs', 'mail-check.mjs', 'mail-act.mjs']) {
+    const s = readFileSync(join(root, 'scripts', f), 'utf8');
+    assert.ok(!/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(s), `mejladress i klartext i scripts/${f}`);
+    assert.ok(!/(client_secret|password)\s*[:=]\s*['"]/i.test(s), `hårdkodad hemlighet i scripts/${f}`);
+  }
+});
