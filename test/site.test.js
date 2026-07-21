@@ -5,9 +5,23 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const html = readFileSync(join(root, 'index.html'), 'utf8');
+// Startsidan är designprototypen (väg A); mockup-embryot lever vidare i motor/.
+const sajt = readFileSync(join(root, 'index.html'), 'utf8');
+const html = readFileSync(join(root, 'motor', 'index.html'), 'utf8');
 
-test('grundkrav: språk, viewport, titel, beskrivning', () => {
+test('startsidan: prototypen med metadata, runtime och header-logga', () => {
+  assert.ok(sajt.includes('<html lang="sv">'));
+  assert.ok(sajt.includes('<title>Arbixit'));
+  assert.ok(sajt.includes('name="description"'));
+  assert.ok(sajt.includes('./support.js') && existsSync(join(root, 'support.js')));
+  assert.ok(sajt.includes('arbore_blackwhite-mrrh4uun-sswu.png'));
+  assert.ok(existsSync(join(root, 'arbore_blackwhite-mrrh4uun-sswu.png')), 'header-loggan saknas');
+  for (const f of ['arbixit-logo.svg', join('icons', 'planttools.png'), join('_ds', 'organic-cdda6943-0ef4-4f2b-8a24-ef8c6eaa7a6f', 'styles.css')]) {
+    assert.ok(existsSync(join(root, f)), `saknar ${f}`);
+  }
+});
+
+test('grundkrav (motor): språk, viewport, titel, beskrivning', () => {
   assert.ok(html.includes('<html lang="sv">'));
   assert.ok(html.includes('name="viewport"'));
   assert.ok(html.includes('<title>Arbixit'));
@@ -15,7 +29,8 @@ test('grundkrav: språk, viewport, titel, beskrivning', () => {
 });
 
 test('favicon är länkad och finns', () => {
-  assert.ok(html.includes('assets/favicon.svg'));
+  assert.ok(sajt.includes('assets/favicon.svg'));
+  assert.ok(html.includes('../assets/favicon.svg'));
   assert.ok(existsSync(join(root, 'assets', 'favicon.svg')));
 });
 
@@ -45,6 +60,8 @@ test('designunderlaget ligger orört i design/', () => {
 
 test('inga hemligheter i sajtfilerna', () => {
   assert.ok(!/api[_-]?key|secret|password|ghp_|gho_/i.test(html));
+  // Prototypen innehåller apptexten "Secrets management" – leta nyckelmönster.
+  assert.ok(!/api[_-]?key|client_secret|password|ghp_|gho_/i.test(sajt));
 });
 
 test('brevbäraren: workflow och scripts på plats', () => {

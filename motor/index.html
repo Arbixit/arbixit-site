@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="magnus@tqvist.se">
+<meta name="description" content="Arbixit – en växande familj av appar. Varje app är en bit i ett större pussel.">
+<meta name="theme-color" content="#0F3D4C">
+<title>Arbixit – appar som passar ihop</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --petrol:#0F3D4C; --turkos:#2AB3A6; --barnsten:#E8A13B;
+  --sand:#F4EFE8; --grafit:#26262B; --sand-morkare:#E9E2D6;
+  --rubrik:'Space Grotesk','Aptos','Segoe UI',sans-serif;
+  --brod:'Inter','Aptos','Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--brod);background:var(--sand);color:var(--grafit);line-height:1.65}
+.skip{position:absolute;left:-9999px;background:var(--petrol);color:var(--sand);padding:.6rem 1rem;border-radius:8px;z-index:10}
+.skip:focus{left:16px;top:16px}
+.hall{max-width:960px;margin:0 auto;padding:0 20px}
+header{padding:22px 0}
+.topp{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.marke{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--grafit)}
+.marke svg{display:block}
+.marke span{font-family:var(--rubrik);font-weight:600;font-size:1.35rem;letter-spacing:.2px}
+nav{margin-left:auto;display:flex;gap:22px}
+nav a{color:var(--petrol);text-decoration:none;font-weight:500;font-size:.95rem;border-bottom:2px solid transparent;padding-bottom:2px}
+nav a:hover,nav a:focus-visible{border-bottom-color:var(--turkos)}
+.hero{text-align:center;padding:34px 0 8px}
+.hero h1{font-family:var(--rubrik);font-weight:600;font-size:clamp(2rem,5.4vw,3.1rem);color:var(--petrol);letter-spacing:-.5px}
+.hero p{max-width:560px;margin:14px auto 0;font-size:1.06rem}
+.hint{margin-top:10px;font-size:.9rem;color:#5d564d}
+.pusselwrap{max-width:780px;margin:6px auto 0}
+#pussel{width:100%;height:auto;display:block}
+.bit{cursor:pointer;outline:none;transition:opacity .3s ease,transform .2s ease;transform-box:fill-box;transform-origin:center}
+.bit:hover{transform:scale(1.015)}
+.bit:focus-visible path{stroke:var(--turkos);stroke-width:6}
+.ledig-path{fill:rgba(15,61,76,.03);stroke:#a89f92;stroke-width:2.5;stroke-dasharray:9 8}
+.zoomad .bit:not(.aktiv){opacity:.14;pointer-events:none}
+.zoomad .bit:hover{transform:none}
+.panel{max-width:780px;margin:18px auto 0;padding:0 20px}
+.panel-kort{background:#fff;border:1px solid var(--sand-morkare);border-radius:16px;padding:26px 28px;display:flex;gap:26px;align-items:flex-start;position:relative}
+.panel-kort svg{flex:0 0 auto}
+.panel-text h2{font-family:var(--rubrik);font-weight:600;color:var(--petrol);font-size:1.5rem}
+.slogan{color:#5d564d;font-weight:500;margin:2px 0 10px;font-size:.95rem}
+.lankar{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
+.knapp{display:inline-block;text-decoration:none;font-weight:500;font-size:.95rem;padding:.55rem 1.05rem;border-radius:10px;background:var(--petrol);color:var(--sand);border:2px solid var(--petrol)}
+.knapp.sekundar{background:transparent;color:var(--petrol)}
+.knapp:hover,.knapp:focus-visible{background:var(--turkos);border-color:var(--turkos);color:#06302c}
+.not{margin-top:12px;font-size:.82rem;color:#8a8175}
+.stang{position:absolute;top:14px;right:14px;background:none;border:none;font:inherit;font-weight:500;color:var(--petrol);cursor:pointer;padding:6px 10px;border-radius:8px}
+.stang:hover,.stang:focus-visible{background:var(--sand)}
+section.block{padding:56px 0 8px}
+section.block h2{font-family:var(--rubrik);font-weight:600;color:var(--petrol);font-size:1.55rem;margin-bottom:6px}
+section.block>.hall>p{max-width:640px}
+.steg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.steg article{background:#fff;border:1px solid var(--sand-morkare);border-radius:14px;padding:20px}
+.steg .nr{font-family:var(--rubrik);font-weight:600;color:var(--turkos);font-size:1rem}
+.steg h3{font-family:var(--rubrik);font-weight:600;font-size:1.08rem;margin:4px 0 6px}
+.steg p{font-size:.94rem}
+.profil{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:24px}
+.swatch{border-radius:14px;padding:14px;border:1px solid var(--sand-morkare)}
+.swatch .prov{height:54px;border-radius:10px;margin-bottom:10px;border:1px solid rgba(0,0,0,.06)}
+.swatch b{display:block;font-weight:600;font-size:.95rem}
+.swatch code{font-size:.8rem;color:#6b6357}
+.typrad{margin-top:26px;display:grid;gap:8px}
+.typrad .disp{font-family:var(--rubrik);font-weight:600;font-size:1.7rem;color:var(--petrol)}
+.typrad .brodprov{font-size:1.05rem}
+.typrad small{color:#6b6357}
+footer{margin-top:64px;background:var(--petrol);color:var(--sand)}
+footer .hall{padding:26px 20px;display:flex;gap:10px 28px;flex-wrap:wrap;font-size:.9rem}
+footer a{color:var(--sand)}
+@media (max-width:680px){
+  .steg{grid-template-columns:1fr}
+  .panel-kort{flex-direction:column;gap:16px}
+  nav{gap:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .bit,.bit:hover{transition:none;transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#innehall">Hoppa till innehållet</a>
+
+<header class="hall">
+  <div class="topp">
+    <a class="marke" href="#">
+      <svg width="30" height="30" viewBox="0 0 512 512" aria-hidden="true"><path fill="#0F3D4C" d="M48,48 H220 C220,30 200,32 200,16 C200,0 312,0 312,16 C312,32 292,30 292,48 H464 V220 C482,220 480,200 496,200 C512,200 512,312 496,312 C480,312 482,292 464,292 V464 H292 C292,482 312,480 312,496 C312,512 200,512 200,496 C200,480 220,482 220,464 H48 V292 C30,292 32,312 16,312 C0,312 0,200 16,200 C32,200 30,220 48,220 V48 Z"/></svg>
+      <span>Arbixit</span>
+    </a>
+    <nav aria-label="Huvudmeny">
+      <a href="#innehall">Appar</a>
+      <a href="#sa-vaxer">Så växer pusslet</a>
+      <a href="#profil">Grafisk profil</a>
+    </nav>
+  </div>
+</header>
+
+<main id="innehall">
+  <section class="hero hall">
+    <h1>Appar som passar ihop.</h1>
+    <p>Arbixit är en växande familj av appar. Varje app löser sin egen uppgift &ndash; tillsammans bildar de ett pussel.</p>
+    <p class="hint" id="hint">Klicka på en bit för att zooma in.</p>
+  </section>
+
+  <div class="pusselwrap">
+    <svg id="pussel" viewBox="0 0 1000 750" role="group" aria-label="Arbixits app-pussel">
+      <noscript></noscript>
+    </svg>
+    <noscript><p style="text-align:center">Pusslet kräver JavaScript. Apparna hittar du även på GitHub.</p></noscript>
+  </div>
+
+  <section class="panel" id="panel" hidden aria-labelledby="panel-titel">
+    <div class="panel-kort">
+      <button class="stang" id="stang" type="button">Stäng</button>
+      <svg id="panel-ikon" width="104" height="104" viewBox="0 0 512 512" aria-hidden="true"></svg>
+      <div class="panel-text">
+        <h2 id="panel-titel"></h2>
+        <p class="slogan" id="panel-slogan"></p>
+        <p id="panel-beskrivning"></p>
+        <p class="lankar" id="panel-lankar"></p>
+        <p class="not" id="panel-not"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="sa-vaxer">
+    <div class="hall">
+      <h2>Så växer pusslet</h2>
+      <p>GitHub-dashboarden är källan till sanning. Sajten bygger sig själv.</p>
+      <div class="steg">
+        <article><span class="nr">1</span><h3>Appen släpps</h3><p>En ny release publiceras i Arbixits GitHub-dashboard.</p></article>
+        <article><span class="nr">2</span><h3>Biten ritas</h3><p>Pipelinen genererar en pusselbits-ikon ur den gemensamma exportmallen.</p></article>
+        <article><span class="nr">3</span><h3>Pusslet uppdateras</h3><p>arbixit.se hämtar den nya biten automatiskt &ndash; klicka och utforska.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="profil">
+    <div class="hall">
+      <h2>Grafisk profil</h2>
+      <p>Gemensam bas, egen accentfärg per app. Samma kantprofil i varje ikon: knoppdjup 44, hals 72, knoppbredd 112 &ndash; allt relativt bitkroppen 416 i ett 512-grid.</p>
+      <div class="profil">
+        <div class="swatch"><div class="prov" style="background:#0F3D4C"></div><b>Petrol</b><code>#0F3D4C &middot; bas &amp; wordmark</code></div>
+        <div class="swatch"><div class="prov" style="background:#2AB3A6"></div><b>Turkos</b><code>#2AB3A6 &middot; prim&auml;r accent</code></div>
+        <div class="swatch"><div class="prov" style="background:#E8A13B"></div><b>B&auml;rnsten</b><code>#E8A13B &middot; appf&auml;rg Postiljon</code></div>
+        <div class="swatch"><div class="prov" style="background:#F4EFE8"></div><b>Sand</b><code>#F4EFE8 &middot; ljusa ytor</code></div>
+        <div class="swatch"><div class="prov" style="background:#26262B"></div><b>Grafit</b><code>#26262B &middot; text</code></div>
+      </div>
+      <div class="typrad">
+        <span class="disp">Space Grotesk &ndash; rubriker &amp; wordmark</span>
+        <span class="brodprov">Inter f&ouml;r br&ouml;dtext och gr&auml;nssnitt. Aa &Aring;&aring; &Ouml;&ouml; 0123456789.</span>
+        <small>&Ouml;ppna licenser. M365-fallback: Aptos / Segoe UI.</small>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="hall">
+    <span>&copy; 2026 Arbixit</span>
+    <span>Kontakt: <a href="mailto:magnus@tqvist.se">magnus@tqvist.se</a></span>
+    <span>arbixit.se &middot; hosting-f&ouml;rslag: GitHub Pages + Loopia-DNS</span>
+  </div>
+</footer>
+
+<script>
+// piecePath: kanonisk källa är arbixit-brand/generator/piece.js – ändra där först.
+function piecePath(cx, cy, S, edges) {
+  const h = S / 2;
+  const NW = 0.086538 * S, KW = 0.134615 * S;
+  const a1 = 0.043269 * S, a2 = 0.038462 * S, a3 = 0.076923 * S, a4 = 0.115385 * S;
+  const corners = [[-h, -h], [h, -h], [h, h], [-h, h]];
+  const rot = (p, k) => { let x = p[0], y = p[1]; for (let i = 0; i < k; i++) { const t = x; x = -y; y = t; } return [x, y]; };
+  const pt = (p) => (cx + p[0]).toFixed(1) + ',' + (cy + p[1]).toFixed(1);
+  let d = 'M' + pt(corners[0]);
+  for (let k = 0; k < 4; k++) {
+    const end = corners[(k + 1) % 4];
+    if (edges[k] === 'flat') { d += ' L' + pt(end); continue; }
+    const s = edges[k] === 'tab' ? -1 : 1;
+    const base = [
+      [-NW, -h], [-NW, -h + s * a1], [-KW, -h + s * a2], [-KW, -h + s * a3],
+      [-KW, -h + s * a4], [KW, -h + s * a4], [KW, -h + s * a3],
+      [KW, -h + s * a2], [NW, -h + s * a1], [NW, -h]
+    ].map(p => rot(p, k));
+    d += ' L' + pt(base[0])
+      + ' C' + pt(base[1]) + ' ' + pt(base[2]) + ' ' + pt(base[3])
+      + ' C' + pt(base[4]) + ' ' + pt(base[5]) + ' ' + pt(base[6])
+      + ' C' + pt(base[7]) + ' ' + pt(base[8]) + ' ' + pt(base[9])
+      + ' L' + pt(end);
+  }
+  return d + ' Z';
+}
+
+const APPS = [
+  { id: 'arbixit', namn: 'Arbixit', farg: '#0F3D4C', pos: [500, 360], edges: ['tab', 'tab', 'tab', 'tab'],
+    slogan: 'Navet i pusslet',
+    beskrivning: 'Arbixit bygger små, vassa appar som publiceras löpande via GitHub. Ingen svit, inga licenslås – fristående bitar som passar ihop.',
+    lankar: [{ txt: 'Följ på GitHub', href: '#' }] },
+  { id: 'postiljon', namn: 'Postiljon', farg: '#E8A13B', pos: [720, 360], edges: ['flat', 'tab', 'flat', 'socket'],
+    slogan: 'Din inkorg, sorterad',
+    beskrivning: 'Postiljon går igenom inkorgen i schemalagda dagliga pass och klassificerar mejlen åt dig – det viktiga överst, resten ur vägen.',
+    lankar: [{ txt: 'Öppna på GitHub', href: '#' }, { txt: 'Ladda ner', href: '#' }] },
+  { id: 'ledig-topp', ledig: true, pos: [500, 140], edges: ['tab', 'flat', 'socket', 'flat'] },
+  { id: 'ledig-botten', ledig: true, pos: [500, 580], edges: ['socket', 'flat', 'tab', 'flat'] },
+  { id: 'ledig-vanster', ledig: true, pos: [280, 360], edges: ['flat', 'socket', 'flat', 'tab'] }
+];
+
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('pussel');
+const panel = document.getElementById('panel');
+const BAS = [0, 0, 1000, 750];
+let anim = null, aktivG = null;
+const reduceras = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function el(namn, attr, parent) {
+  const n = document.createElementNS(NS, namn);
+  for (const k in attr) n.setAttribute(k, attr[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+
+function ritaGlyf(parent, app, cx, cy, skala) {
+  if (app.id === 'postiljon') {
+    const g = el('g', { fill: 'none', stroke: '#FFFFFF', 'stroke-width': 15 * skala,
+      'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
+    el('rect', { x: cx - 88 * skala, y: cy - 60 * skala, width: 176 * skala, height: 120 * skala, rx: 14 * skala }, g);
+    el('path', { d: 'M' + (cx - 80 * skala) + ',' + (cy - 46 * skala) + ' L' + cx + ',' + (cy + 16 * skala)
+      + ' L' + (cx + 80 * skala) + ',' + (cy - 46 * skala) }, g);
+  }
+}
+
+APPS.forEach(app => {
+  const g = el('g', { 'class': 'bit' + (app.ledig ? ' ledig' : ''), tabindex: 0, role: 'button',
+    'aria-label': app.ledig ? 'Ledig plats i pusslet – visa detaljer' : app.namn + ' – visa detaljer' }, svg);
+  const d = piecePath(app.pos[0], app.pos[1], 220, app.edges);
+  if (app.ledig) {
+    el('path', { d: d, 'class': 'ledig-path' }, g);
+    const t = el('text', { x: app.pos[0], y: app.pos[1] + 16, 'text-anchor': 'middle',
+      'font-size': 46, fill: '#a89f92', 'font-family': "'Space Grotesk','Segoe UI',sans-serif" }, g);
+    t.textContent = '+';
+  } else {
+    el('path', { d: d, fill: app.farg, stroke: '#F4EFE8', 'stroke-width': 3 }, g);
+    if (app.id === 'arbixit') {
+      const t = el('text', { x: 500, y: 372, 'text-anchor': 'middle', 'font-size': 37, 'font-weight': 600,
+        fill: '#F4EFE8', 'font-family': "'Space Grotesk','Segoe UI',sans-serif", 'letter-spacing': 0.5 }, g);
+      t.textContent = 'Arbixit';
+    } else {
+      ritaGlyf(g, app, app.pos[0], app.pos[1] - 14, 0.42);
+      const t = el('text', { x: app.pos[0], y: app.pos[1] + 62, 'text-anchor': 'middle', 'font-size': 23,
+        'font-weight': 600, fill: '#FFFFFF', 'font-family': "'Space Grotesk','Segoe UI',sans-serif" }, g);
+      t.textContent = app.namn;
+    }
+  }
+  const oppna = () => visa(app, g);
+  g.addEventListener('click', oppna);
+  g.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); oppna(); }
+  });
+});
+
+function setVB(v) { svg.setAttribute('viewBox', v.map(n => n.toFixed(1)).join(' ')); }
+
+function animVB(mal) {
+  if (anim) cancelAnimationFrame(anim);
+  if (reduceras.matches) { setVB(mal); return; }
+  const fran = svg.getAttribute('viewBox').split(' ').map(Number);
+  const t0 = performance.now(), dur = 420;
+  const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  function steg(nu) {
+    const t = Math.min(1, (nu - t0) / dur), e = ease(t);
+    setVB(fran.map((f, i) => f + (mal[i] - f) * e));
+    if (t < 1) anim = requestAnimationFrame(steg);
+  }
+  anim = requestAnimationFrame(steg);
+}
+
+function visa(app, g) {
+  if (aktivG) aktivG.classList.remove('aktiv');
+  aktivG = g; g.classList.add('aktiv');
+  svg.parentElement.classList.add('zoomad');
+  animVB([app.pos[0] - 200, app.pos[1] - 200, 400, 400]);
+  const ikon = document.getElementById('panel-ikon');
+  ikon.innerHTML = '';
+  const lankar = document.getElementById('panel-lankar');
+  lankar.innerHTML = '';
+  if (app.ledig) {
+    el('path', { d: piecePath(256, 256, 416, app.edges), 'class': 'ledig-path' }, ikon);
+    document.getElementById('panel-titel').textContent = 'Ledig plats i pusslet';
+    document.getElementById('panel-slogan').textContent = 'Reserverad för nästa app';
+    document.getElementById('panel-beskrivning').textContent =
+      'När nästa app publiceras i GitHub-dashboarden ritas dess pusselbit automatiskt och dockar in här. Pusslet växer med varje släpp.';
+    document.getElementById('panel-not').textContent = '';
+  } else {
+    el('path', { d: piecePath(256, 256, 416, app.edges), fill: app.farg }, ikon);
+    if (app.id === 'arbixit') {
+      const t = el('text', { x: 256, y: 282, 'text-anchor': 'middle', 'font-size': 80, 'font-weight': 600,
+        fill: '#F4EFE8', 'font-family': "'Space Grotesk','Segoe UI',sans-serif" }, ikon);
+      t.textContent = 'Arbixit';
+    } else {
+      ritaGlyf(ikon, app, 256, 256, 1);
+    }
+    document.getElementById('panel-titel').textContent = app.namn;
+    document.getElementById('panel-slogan').textContent = app.slogan;
+    document.getElementById('panel-beskrivning').textContent = app.beskrivning;
+    app.lankar.forEach(l => {
+      const a = document.createElement('a');
+      a.className = 'knapp' + (l.txt === 'Ladda ner' ? ' sekundar' : '');
+      a.href = l.href; a.textContent = l.txt;
+      lankar.appendChild(a);
+    });
+    document.getElementById('panel-not').textContent = 'Länkar aktiveras vid lansering.';
+  }
+  panel.hidden = false;
+  document.getElementById('hint').textContent = 'Tryck Stäng eller Esc för att zooma ut.';
+  panel.scrollIntoView({ behavior: reduceras.matches ? 'auto' : 'smooth', block: 'nearest' });
+}
+
+function stang() {
+  if (aktivG) { aktivG.classList.remove('aktiv'); aktivG = null; }
+  svg.parentElement.classList.remove('zoomad');
+  panel.hidden = true;
+  document.getElementById('hint').textContent = 'Klicka på en bit för att zooma in.';
+  animVB(BAS);
+}
+
+document.getElementById('stang').addEventListener('click', stang);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden) stang(); });
+</script>
+</body>
+</html>

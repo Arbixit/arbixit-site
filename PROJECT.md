@@ -13,14 +13,20 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
 
 ## Läge just nu
 
-- `index.html` är **embryot** – den levererade mockupen ur arbetsprovet
-  ("2026-07-18 arbixit-se mockup.html"), med favicon tillagd. App-datan är
-  hårdkodad; koppling till apps.json är nästa steg.
-- `design/` innehåller **designunderlaget** `design_handoff_arbixit_pussel`
-  (high-fidelity-prototyp med designsystemet Organic, se `design/INSTRUKTION.md`).
-  Incheckat som referens – **inte integrerat, inte deployat.**
-- CI kör test vid push/PR. **Ingen deploy** – Pages aktiveras först efter
-  godkännande.
+- **`index.html` är designprototypen** – livesatt 2026-07-21 enligt
+  INSTRUKTION.md väg A (godkänt av Magnus i chatt). Prototypens filer
+  (`support.js`, `arbixit-logo.svg`, `icons/`, `_ds/`) ligger kopierade i
+  roten; endast head-metadata (lang, titel, beskrivning, favicon) är
+  tillagd, designen orörd. Header-loggan `arbore_blackwhite-mrrh4uun-sswu.png`
+  hämtad ur "01 Grafisk profil/Arbixit pussel mockup hemsida.zip"
+  (`arbore-sf-sv.svg` fanns inte i något åtkomligt underlag – byt in när
+  den dyker upp).
+- `motor/index.html` är **mockup-embryot** (arbetsprovets sajt) – behållet
+  för vidareutvecklingen: app-datan ska på sikt byggas från
+  `arbixit-brand/manifest/apps.json`.
+- `design/` innehåller **designunderlaget** orört, som referens.
+- CI kör test vid push/PR. **GitHub Pages deployar main** (aktiverad
+  2026-07-21); `CNAME` pekar www.arbixit.se – DNS pekas av Magnus (rött).
 - **Brevbäraren** (`.github/workflows/brevbararen.yml`) bevakar Arbixits
   delade Claude-postlåda (adressen ligger i Actions-secreten `MAIL_MAILBOX`).
   Den bor i detta publika repo eftersom Actions-minuter är kostnadsfria i
@@ -41,20 +47,25 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
 
 | Sökväg | Innehåll |
 |---|---|
-| `index.html` | Sajt-embryot: pussel-zoom, panel, grafisk profil, WCAG-grund (skip-länk, fokus, reduced motion, noscript). |
+| `index.html` + `support.js`, `arbixit-logo.svg`, `icons/`, `_ds/` | Startsidan: designprototypen (Organic-designsystemet), livesatt via Pages. |
+| `CNAME` | www.arbixit.se – Pages custom domain (DNS pekas av Magnus). |
+| `motor/index.html` | Sajt-embryot från arbetsprovet: pussel-zoom, panel, grafisk profil, WCAG-grund. Bas för apps.json-motorn. |
 | `assets/favicon.svg` | Favicon ur huvudpusselbiten. PNG/touch-ikoner kommer med brand-repots PNG-export. |
 | `design/` | Designunderlag, orört. Startfil `Arbixit Pussel.dc.html`. |
 | `test/` | Sajtkontroller (`npm test`): grundkrav, tillgänglighet, profilfärger, kantprofil, inga hemligheter, brevbärarens filer. |
 | `scripts/` | Brevbäraren: `graph.mjs` (auth-hjälpare), `mail-check.mjs` (deterministisk koll + loopskydd), `mail-act.mjs` (svar, läst-markering, mejllogg till SharePoint). |
 
-`piecePath` i index.html har sin kanoniska källa i
+`piecePath` i motor/index.html har sin kanoniska källa i
 `arbixit-brand/generator/piece.js` – ändra där först.
 
 ## Nästa steg
 
-1. Sajt v1: integrera designunderlaget i `design/` (eller besluta väg A/B
-   enligt `design/INSTRUKTION.md`) – mål fredag 31 juli enligt avtalet B9.
-2. Bygg pusslet från `apps.json` i stället för hårdkodad app-data
-   (repository_dispatch + daglig cron enligt tekniska arbetsupplägget).
-3. Lighthouse-, axe- och länkkontroll i CI före deploy-steget.
-4. Pages-preview + DNS-underlag till Magnus; livesättning efter godkännande.
+1. [M] Peka DNS för www.arbixit.se mot GitHub Pages (CNAME →
+   arbixit.github.io); HTTPS slår på automatiskt efteråt.
+2. Byt in `arbore-sf-sv.svg` som header-logga när filen finns i underlaget.
+3. Ersätt prototypens platshållartexter/-länkar per app och lägg ikoner för
+   crm, fineprint, postiljon, rocketchat, showroom (se design/INSTRUKTION.md).
+4. Bygg pusslet från `apps.json` i stället för hårdkodad app-data
+   (repository_dispatch + daglig cron enligt tekniska arbetsupplägget) –
+   utveckling sker i `motor/`.
+5. Lighthouse-, axe- och länkkontroll i CI.
