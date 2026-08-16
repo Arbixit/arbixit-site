@@ -89,11 +89,11 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
 
 ## Nästa steg
 
-1. [M] Slutför Entra-registreringen "Arbixit Task - M365 Connector": ladda upp
-   `arbixit-brand/appregistrering/arbixit-task-m365-215.png` som applogotyp, sätt
-   Hemside-URL `https://www.arbixit.se/`, URL för tjänstvillkor
-   `https://www.arbixit.se/terms/` och sekretesspolicy
-   `https://www.arbixit.se/privacy/`.
+1. Villkors- och policysidorna gäller **hela Arbixit**, inte bara Task – peka
+   kommande app-registreringar (CRM, Postiljon, Citadel) på samma URL:er:
+   `https://www.arbixit.se/terms/` och `https://www.arbixit.se/privacy/`,
+   med avslutande snedstreck (Microsofts form, och det registret dokumenterar).
+   Task-registreringen är klar sedan 2026-08-16.
 2. Byt in `arbore-sf-sv.svg` som header-logga när filen finns i underlaget.
 3. Ersätt prototypens platshållartexter/-länkar per app och lägg ikoner för
    crm, fineprint, postiljon, rocketchat, showroom (se design/INSTRUKTION.md).
