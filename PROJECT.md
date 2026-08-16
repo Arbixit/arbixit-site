@@ -90,7 +90,7 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
 ## Nästa steg
 
 1. [M] Slutför Entra-registreringen "Arbixit Task - M365 Connector": ladda upp
-   `arbixit-brand/dist/arbixit-task-m365-215.png` som applogotyp, sätt
+   `arbixit-brand/appregistrering/arbixit-task-m365-215.png` som applogotyp, sätt
    Hemside-URL `https://www.arbixit.se/`, URL för tjänstvillkor
    `https://www.arbixit.se/terms/` och sekretesspolicy
    `https://www.arbixit.se/privacy/`.
