@@ -88,3 +88,44 @@ test('brevbäraren: inga mejladresser eller nycklar i klartext', () => {
     assert.ok(!/(client_secret|password)\s*[:=]\s*['"]/i.test(s), `hårdkodad hemlighet i scripts/${f}`);
   }
 });
+
+// --- Juridiska sidor: /terms och /privacy (krävs för MS app-registreringen) ---
+
+const juridiska = ['terms', 'privacy'].map((namn) => ({
+  namn,
+  fil: join(root, namn, 'index.html'),
+  text: readFileSync(join(root, namn, 'index.html'), 'utf8')
+}));
+
+test('juridiska sidor: grundkrav, metadata och delade resurser', () => {
+  for (const f of ['legal.css', 'legal.js']) {
+    assert.ok(existsSync(join(root, f)), `saknar ${f}`);
+  }
+  for (const { namn, text } of juridiska) {
+    assert.ok(text.includes('<html lang="sv">'), `${namn}: språk saknas`);
+    assert.ok(text.includes('name="viewport"'), `${namn}: viewport saknas`);
+    assert.ok(text.includes('name="description"'), `${namn}: beskrivning saknas`);
+    assert.ok(/<title>[^<]*Arbixit/.test(text), `${namn}: titel saknas`);
+    assert.ok(text.includes('../assets/favicon.svg'), `${namn}: favicon saknas`);
+    assert.ok(text.includes('../legal.css') && text.includes('../legal.js'), `${namn}: delade resurser saknas`);
+  }
+});
+
+test('juridiska sidor: båda språkversionerna finns i HTML:en', () => {
+  for (const { namn, text } of juridiska) {
+    assert.ok(text.includes('data-doc="sv"'), `${namn}: svensk version saknas`);
+    assert.ok(text.includes('data-doc="en"'), `${namn}: engelsk version saknas`);
+  }
+});
+
+test('juridiska sidor: inga oifyllda platshållare får publiceras', () => {
+  for (const { namn, text } of juridiska) {
+    assert.ok(!/class="todo/.test(text), `${namn}: platshållare kvar – fyll i org.nr, adress och kontaktuppgifter`);
+    assert.ok(!text.includes('PLACEHOLDER@'), `${namn}: platshållar-mejladress kvar`);
+  }
+});
+
+test('startsidan länkar till villkor och integritetspolicy', () => {
+  assert.ok(sajt.includes('href="terms/"'), 'länk till villkoren saknas');
+  assert.ok(sajt.includes('href="privacy/"'), 'länk till integritetspolicyn saknas');
+});

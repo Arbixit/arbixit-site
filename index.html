@@ -136,6 +136,14 @@ a:hover{color:oklch(0.88 0.10 255)}
       <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;color:oklch(0.6 0.015 265)">{{ t.growth }}</span>
     </div>
   </main>
+
+  <footer style="max-width:1240px;margin:clamp(28px,5vw,56px) auto 0;padding:22px clamp(20px,4vw,44px) 40px;border-top:1px solid oklch(0.30 0.02 265 / 0.6);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;font-size:13.5px;color:oklch(0.60 0.015 265)">
+    <div style="display:flex;flex-wrap:wrap;gap:20px">
+      <a href="terms/" style="color:oklch(0.74 0.015 265);text-decoration:none">{{ t.terms }}</a>
+      <a href="privacy/" style="color:oklch(0.74 0.015 265);text-decoration:none">{{ t.privacy }}</a>
+    </div>
+    <span>© 2026 Arbore AB</span>
+  </footer>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:840},&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;grid&quot;,&quot;radial&quot;],&quot;default&quot;:&quot;grid&quot;,&quot;tsType&quot;:&quot;'grid'|'radial'&quot;,&quot;section&quot;:&quot;Pussel&quot;,&quot;label&quot;:&quot;Layout&quot;},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sv&quot;,&quot;en&quot;],&quot;default&quot;:&quot;sv&quot;,&quot;tsType&quot;:&quot;'sv'|'en'&quot;,&quot;section&quot;:&quot;Innehåll&quot;,&quot;label&quot;:&quot;Språk&quot;},&quot;glow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Pussel&quot;,&quot;label&quot;:&quot;Glöd &amp; skuggor&quot;}}">
@@ -176,8 +184,8 @@ class Component extends DCLogic {
     const sel = this.state.sel;
 
     const t = {
-      sv: { eyebrow: 'En plattform · många appar', title: 'Ett pussel av appar', sub: 'Varje app vi bygger är en pusselbit som passar in i Arbixit-plattformen. Klicka på en bit för att zooma in.', hint: 'Klicka på en pusselbit', grid: 'Rutnät', radial: 'Radiell', features: 'Nyckelfunktioner', growth: 'Pusslet växer när nya appar tillkommer', cta: 'Öppna appen' },
-      en: { eyebrow: 'One platform · many apps', title: 'A puzzle of apps', sub: 'Every app we build is a puzzle piece that clicks into the Arbixit platform. Tap a piece to zoom in.', hint: 'Click a puzzle piece', grid: 'Grid', radial: 'Radial', features: 'Key features', growth: 'The puzzle grows as new apps arrive', cta: 'Open the app' }
+      sv: { eyebrow: 'En plattform · många appar', title: 'Ett pussel av appar', sub: 'Varje app vi bygger är en pusselbit som passar in i Arbixit-plattformen. Klicka på en bit för att zooma in.', hint: 'Klicka på en pusselbit', grid: 'Rutnät', radial: 'Radiell', features: 'Nyckelfunktioner', growth: 'Pusslet växer när nya appar tillkommer', cta: 'Öppna appen', terms: 'Användarvillkor', privacy: 'Integritetspolicy' },
+      en: { eyebrow: 'One platform · many apps', title: 'A puzzle of apps', sub: 'Every app we build is a puzzle piece that clicks into the Arbixit platform. Tap a piece to zoom in.', hint: 'Click a puzzle piece', grid: 'Grid', radial: 'Radial', features: 'Key features', growth: 'The puzzle grows as new apps arrive', cta: 'Open the app', terms: 'Terms of Service', privacy: 'Privacy Policy' }
     }[lang];
 
     const H = (hue) => `oklch(0.70 0.145 ${hue})`;

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integritetspolicy – Arbixit</title>
+<meta name="description" content="Integritetspolicy för Arbixit – vilka uppgifter som behandlas, hur Microsoft 365-kopplingen fungerar, hur länge data sparas och vilka rättigheter du har.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../legal.css">
+</head>
+<body>
+
+<header class="site-head">
+  <a class="brand" href="../">
+    <img src="../arbore_blackwhite-mrrh4uun-sswu.png" alt="">
+    <span>Arbixit</span>
+  </a>
+  <div class="langswitch" role="group" aria-label="Språk / Language">
+    <button type="button" data-lang="sv" class="on" aria-pressed="true">SV</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ============================ SVENSKA ============================ -->
+<article lang="sv" data-doc="sv">
+  <p class="eyebrow">Juridik</p>
+  <h1>Integritetspolicy</h1>
+  <p class="lead">Hur Arbixit behandlar personuppgifter i webbplatsen, apparna och Microsoft 365-kopplingen.</p>
+  <p class="meta">Senast uppdaterad: 16 augusti 2026 · Version 1.0</p>
+
+  <nav class="toc" aria-label="Innehåll">
+    <ol>
+      <li><a href="#sv-1">Vem som ansvarar</a></li>
+      <li><a href="#sv-2">Webbplatsen arbixit.se</a></li>
+      <li><a href="#sv-3">Microsoft 365-kopplingen i Arbixit Task</a></li>
+      <li><a href="#sv-4">Ändamål och rättslig grund</a></li>
+      <li><a href="#sv-5">Hur länge uppgifterna sparas</a></li>
+      <li><a href="#sv-6">Var uppgifterna finns</a></li>
+      <li><a href="#sv-7">Underbiträden och mottagare</a></li>
+      <li><a href="#sv-8">AI-funktioner</a></li>
+      <li><a href="#sv-9">Säkerhet</a></li>
+      <li><a href="#sv-10">Så återkallas åtkomsten</a></li>
+      <li><a href="#sv-11">Dina rättigheter</a></li>
+      <li><a href="#sv-12">Ändringar</a></li>
+      <li><a href="#sv-13">Kontakt</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="sv-1">1. Vem som ansvarar</h2>
+  <p><strong>Arbore AB</strong>, org.nr 559163-6336, Havsbadsvägen 30, 262 63 Ängelholm, Sverige, tillhandahåller Arbixit.</p>
+  <ul>
+    <li>För webbplatsen <strong>arbixit.se</strong> är Arbore AB <strong>personuppgiftsansvarig</strong>.</li>
+    <li>För uppgifter som din organisation lägger in i apparna – inklusive e-post som hämtas via Microsoft 365-kopplingen – är <strong>din organisation personuppgiftsansvarig</strong> och Arbore AB <strong>personuppgiftsbiträde</strong>. Vi behandlar uppgifterna enligt din organisations instruktioner och det personuppgiftsbiträdesavtal som ingåtts.</li>
+  </ul>
+
+  <h2 id="sv-2">2. Webbplatsen arbixit.se</h2>
+  <p>Webbplatsen är statisk och sätter <strong>inga kakor</strong>. Vi använder ingen analys, ingen annonsspårning och ingen profilering.</p>
+  <ul>
+    <li>Sidorna levereras av <strong>GitHub Pages</strong>, som av drift- och säkerhetsskäl behandlar din IP-adress och webbläsarinformation i sina leveransloggar.</li>
+    <li>Typsnitten hämtas från <strong>Google Fonts</strong>, vilket innebär att din IP-adress lämnas ut till Google när sidan laddas.</li>
+    <li>Vi lagrar inga besöksuppgifter själva.</li>
+  </ul>
+
+  <h2 id="sv-3">3. Microsoft 365-kopplingen i Arbixit Task</h2>
+  <p>Arbixit Task kan kopplas till <strong>en enskild delad brevlåda</strong> i din organisations Microsoft 365, så att inkommande e-post blir ärenden i appen och svar kan skickas från brevlådan. Så här fungerar det.</p>
+
+  <h3>3.1 Hur åtkomsten ges och avgränsas</h3>
+  <ul>
+    <li>Kopplingen använder ett <strong>applikationsflöde (client credentials)</strong>. Ingen enskild användare loggar in mot Microsoft via appen och vi ser aldrig någons Microsoft-lösenord.</li>
+    <li>En <strong>administratör i din organisation</strong> godkänner appen. Registreringen begär <em>inga</em> applikationsbehörigheter i Microsoft Entra – endast den delegerade behörigheten <code>User.Read</code>, som finns för att administratörsgodkännandet ska ha något att godkänna och för att tjänstens huvudobjekt ska skapas i er tenant.</li>
+    <li>Den faktiska brevlådeåtkomsten sätts i <em>er</em> miljö med <strong>Exchange Application RBAC</strong>, begränsad med ett hanteringsscope till exakt den brevlåda ni pekar ut. Rollerna är <code>Application Mail.ReadWrite</code> och <code>Application Mail.Send</code>.</li>
+    <li>Appen kommer därmed <strong>inte</strong> åt andra brevlådor, kalendrar, filer, Teams eller kataloginformation.</li>
+  </ul>
+
+  <h3>3.2 Vilka uppgifter som hämtas</h3>
+  <p>Från den utpekade brevlådans inkorg hämtas nya och ändrade meddelanden. Per meddelande behandlas:</p>
+  <ul>
+    <li>avsändarens namn och e-postadress, svarsadress,</li>
+    <li>mottagare i Till, Kopia och Hemlig kopia,</li>
+    <li>ämne, meddelandets id och trådreferenser,</li>
+    <li>brödtext i både text- och HTML-format,</li>
+    <li>bilagor (filnamn, filtyp, storlek och innehåll),</li>
+    <li>tidpunkt då meddelandet skickades.</li>
+  </ul>
+  <p>Innehållet kan alltså innehålla personuppgifter om tredje part, eftersom det är avsändaren som avgör vad som skrivs i ett mejl.</p>
+
+  <h3>3.3 Vad som lagras</h3>
+  <ul>
+    <li>Meddelandena och deras metadata lagras i appens egen databas. Inkommande HTML saneras innan den sparas.</li>
+    <li>Bilagor lagras som filer på appservern, med kontrollsumma.</li>
+    <li>Brevlådans adress och er tenant-identitet lagras för att kopplingen ska fungera.</li>
+    <li>Markören för nästa hämtning (Microsofts delta-länk) lagras <strong>krypterad</strong>. Den innehåller inga inloggningsuppgifter.</li>
+  </ul>
+
+  <h3>3.4 Vad som inte lagras</h3>
+  <ul>
+    <li><strong>Inga användartokens och inga refresh-tokens.</strong> Ett applikationsflöde ger inga sådana, och åtkomsttoken hämtas per anrop och hålls endast i minnet.</li>
+    <li><strong>Inga lösenord</strong> – varken användares eller administratörers.</li>
+    <li>Applikationens klienthemlighet finns endast i serverns miljökonfiguration. Den lämnas aldrig ut via API:et och skrivs aldrig till loggar.</li>
+  </ul>
+
+  <h2 id="sv-4">4. Ändamål och rättslig grund</h2>
+  <table>
+    <thead><tr><th>Ändamål</th><th>Uppgifter</th><th>Rättslig grund</th></tr></thead>
+    <tbody>
+      <tr><td>Leverera appen till din organisation</td><td>Kontouppgifter, appdata</td><td>Fullgörande av avtal med din organisation</td></tr>
+      <tr><td>Omvandla inkommande e-post till ärenden och skicka svar</td><td>E-postinnehåll och metadata enligt 3.2</td><td>Behandling för din organisations räkning, på dess instruktion (biträde)</td></tr>
+      <tr><td>Drift, felsökning och säkerhet</td><td>Tekniska loggar utan meddelandeinnehåll</td><td>Berättigat intresse av säker och fungerande drift</td></tr>
+      <tr><td>Leverera webbplatsen</td><td>IP-adress i leverantörens loggar</td><td>Berättigat intresse av att kunna leverera sidan säkert</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="sv-5">5. Hur länge uppgifterna sparas</h2>
+  <ul>
+    <li>Din organisation ställer själv in <strong>gallringstiden per brevlåda</strong>. Standard är <strong>30 dagar</strong> och tiden kan sättas mellan 1 dag och 10 år.</li>
+    <li>En automatisk rensning kör regelbundet och raderar trådar vars gallringstid löpt ut, <strong>inklusive bilagefilerna på disk</strong>.</li>
+    <li>Övriga appuppgifter sparas så länge din organisations avtal löper. Vid avslut raderas eller återlämnas datan enligt avtalet.</li>
+    <li>Säkerhetskopior roterar enligt vår backuprutin och skrivs över inom den cykeln.</li>
+  </ul>
+
+  <h2 id="sv-6">6. Var uppgifterna finns</h2>
+  <p>Apparna och deras databaser körs på <strong>Amazon Lightsail i Stockholm (<code>eu-north-1</code>)</strong>. Säkerhetskopior lagras i samma region. Behandlingen sker alltså inom EU/EES.</p>
+  <p>Er e-post ligger kvar i er egen Microsoft 365-miljö – vi flyttar den inte, vi hämtar en kopia av det som behövs för ärendehanteringen.</p>
+
+  <h2 id="sv-7">7. Underbiträden och mottagare</h2>
+  <table>
+    <thead><tr><th>Mottagare</th><th>Roll</th><th>Plats</th></tr></thead>
+    <tbody>
+      <tr><td>Amazon Web Services (Lightsail, S3)</td><td>Drift och lagring</td><td>Stockholm, <code>eu-north-1</code></td></tr>
+      <tr><td>Microsoft</td><td>Er egen Microsoft 365-miljö som datakälla</td><td>Enligt ert avtal med Microsoft</td></tr>
+      <tr><td>GitHub (Pages)</td><td>Leverans av webbplatsen arbixit.se</td><td>USA / globalt CDN</td></tr>
+      <tr><td>Google (Fonts)</td><td>Typsnitt på webbplatsen</td><td>USA / globalt CDN</td></tr>
+      <tr><td>Anthropic och OpenAI</td><td>AI-bearbetning – <strong>endast om funktionen slås på</strong>, se avsnitt 8</td><td>USA</td></tr>
+    </tbody>
+  </table>
+  <p>Vid överföring till tredje land sker den med de skyddsåtgärder som gäller för respektive leverantör, i första hand EU-kommissionens standardavtalsklausuler.</p>
+  <p>Vi säljer aldrig personuppgifter och använder dem aldrig för marknadsföring mot tredje part.</p>
+
+  <h2 id="sv-8">8. AI-funktioner</h2>
+  <p>Arbixit Task kan sammanfatta inkommande e-post och föreslå svar eller uppgifter.</p>
+  <ul>
+    <li>Funktionen är <strong>avstängd tills gruppen aktivt slår på den</strong>.</li>
+    <li>Är den påslagen skickas berört meddelandeinnehåll till Anthropic eller OpenAI för bearbetning. Ingen träning av leverantörens modeller sker på ert innehåll enligt de företagsvillkor vi använder.</li>
+    <li>Sammanfattningar och förslag sparas tillsammans med meddelandet och gallras med det.</li>
+    <li><strong>Ingenting skickas eller verkställs automatiskt.</strong> Svar och uppgifter kräver alltid att en människa godkänner dem.</li>
+  </ul>
+
+  <h2 id="sv-9">9. Säkerhet</h2>
+  <ul>
+    <li>All trafik går krypterad över HTTPS.</li>
+    <li>Åtkomst till brevlådan är begränsad till en enda utpekad brevlåda och kan återkallas av er när som helst.</li>
+    <li>Loggar och revisionsspår innehåller <strong>aldrig</strong> åtkomsttokens, klienthemligheter, meddelandeinnehåll eller bilagor.</li>
+    <li>Hemligheter lagras endast i serverns skyddade miljökonfiguration och exponeras inte via API:et.</li>
+    <li>Vid en personuppgiftsincident som rör er data underrättar vi er utan onödigt dröjsmål, så att ni kan fullgöra er anmälningsskyldighet.</li>
+  </ul>
+
+  <h2 id="sv-10">10. Så återkallas åtkomsten</h2>
+  <p>Er administratör kan när som helst avsluta kopplingen. Åtkomsten upphör omedelbart.</p>
+  <ol>
+    <li>Ta bort rolltilldelningen i Exchange Online, eller</li>
+    <li>ta bort tjänstens huvudobjekt (enterprise application) för Arbixit Task i Microsoft Entra.</li>
+  </ol>
+  <p>Vill ni dessutom att redan hämtad e-post raderas – hör av er, eller sätt gallringstiden till 1 dag så rensas den vid nästa körning.</p>
+
+  <h2 id="sv-11">11. Dina rättigheter</h2>
+  <p>Du har rätt att begära tillgång till dina personuppgifter, rättelse, radering, begränsning av behandlingen och dataportabilitet, samt att invända mot behandling som grundas på berättigat intresse.</p>
+  <p>Gäller din begäran uppgifter i en app är det <strong>din egen organisation</strong> som är personuppgiftsansvarig – vänd dig i första hand dit. Vi bistår dem med att fullgöra begäran.</p>
+  <p>Du har också rätt att klaga till <strong>Integritetsskyddsmyndigheten (IMY)</strong>, <a href="https://www.imy.se/">imy.se</a>.</p>
+
+  <h2 id="sv-12">12. Ändringar</h2>
+  <p>Vi kan uppdatera policyn när tjänsterna utvecklas eller regelverket ändras. Datum och versionsnummer högst upp visar när den senast ändrades. Väsentliga ändringar aviseras till berörda kunder.</p>
+
+  <h2 id="sv-13">13. Kontakt</h2>
+  <p>Frågor om den här policyn eller om behandlingen av personuppgifter:</p>
+  <p>Arbore AB · Havsbadsvägen 30, 262 63 Ängelholm, Sverige<br>
+  <a href="mailto:info@arbore.se">info@arbore.se</a> · <a href="tel:+46431311410">+46 431 311 410</a> · <a href="https://www.arbixit.se/">www.arbixit.se</a></p>
+</article>
+
+<!-- ============================ ENGLISH ============================ -->
+<article lang="en" data-doc="en" hidden>
+  <p class="eyebrow">Legal</p>
+  <h1>Privacy Policy</h1>
+  <p class="lead">How Arbixit processes personal data in the website, the applications and the Microsoft 365 connection.</p>
+  <p class="meta">Last updated: 16 August 2026 · Version 1.0</p>
+  <p class="notice">This is a translation for convenience. In case of conflict, the Swedish version prevails.</p>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#en-1">Who is responsible</a></li>
+      <li><a href="#en-2">The arbixit.se website</a></li>
+      <li><a href="#en-3">The Microsoft 365 connection in Arbixit Task</a></li>
+      <li><a href="#en-4">Purposes and legal bases</a></li>
+      <li><a href="#en-5">Retention</a></li>
+      <li><a href="#en-6">Where data is held</a></li>
+      <li><a href="#en-7">Sub-processors and recipients</a></li>
+      <li><a href="#en-8">AI features</a></li>
+      <li><a href="#en-9">Security</a></li>
+      <li><a href="#en-10">How to revoke access</a></li>
+      <li><a href="#en-11">Your rights</a></li>
+      <li><a href="#en-12">Changes</a></li>
+      <li><a href="#en-13">Contact</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="en-1">1. Who is responsible</h2>
+  <p><strong>Arbore AB</strong>, company reg. no. 559163-6336, Havsbadsvägen 30, 262 63 Ängelholm, Sweden, provides Arbixit.</p>
+  <ul>
+    <li>For the <strong>arbixit.se</strong> website, Arbore AB is the <strong>controller</strong>.</li>
+    <li>For data your organisation enters into the applications — including email retrieved through the Microsoft 365 connection — <strong>your organisation is the controller</strong> and Arbore AB is the <strong>processor</strong>. We process the data on your organisation’s instructions under the data processing agreement in place.</li>
+  </ul>
+
+  <h2 id="en-2">2. The arbixit.se website</h2>
+  <p>The website is static and sets <strong>no cookies</strong>. We use no analytics, no advertising trackers and no profiling.</p>
+  <ul>
+    <li>Pages are served by <strong>GitHub Pages</strong>, which processes your IP address and browser information in its delivery logs for operational and security purposes.</li>
+    <li>Fonts are loaded from <strong>Google Fonts</strong>, which means your IP address is disclosed to Google when the page loads.</li>
+    <li>We store no visitor data ourselves.</li>
+  </ul>
+
+  <h2 id="en-3">3. The Microsoft 365 connection in Arbixit Task</h2>
+  <p>Arbixit Task can be connected to <strong>one single shared mailbox</strong> in your organisation’s Microsoft 365, so incoming email becomes work items in the app and replies can be sent from that mailbox. Here is how it works.</p>
+
+  <h3>3.1 How access is granted and scoped</h3>
+  <ul>
+    <li>The connection uses an <strong>application flow (client credentials)</strong>. No individual user signs in to Microsoft through the app and we never see anyone’s Microsoft password.</li>
+    <li>An <strong>administrator in your organisation</strong> grants consent. The registration requests <em>no</em> application permissions in Microsoft Entra — only the delegated permission <code>User.Read</code>, which exists so that admin consent has something to approve and so the service principal is provisioned in your tenant.</li>
+    <li>Actual mailbox access is configured in <em>your</em> environment using <strong>Exchange Application RBAC</strong>, restricted by a management scope to exactly the mailbox you designate. The roles are <code>Application Mail.ReadWrite</code> and <code>Application Mail.Send</code>.</li>
+    <li>The app therefore <strong>cannot</strong> reach other mailboxes, calendars, files, Teams or directory information.</li>
+  </ul>
+
+  <h3>3.2 What is retrieved</h3>
+  <p>New and changed messages are retrieved from the designated mailbox’s inbox. Per message we process:</p>
+  <ul>
+    <li>sender name and email address, reply-to address,</li>
+    <li>recipients in To, Cc and Bcc,</li>
+    <li>subject, message id and thread references,</li>
+    <li>body in both plain text and HTML,</li>
+    <li>attachments (file name, type, size and content),</li>
+    <li>the time the message was sent.</li>
+  </ul>
+  <p>This content may contain personal data about third parties, since it is the sender who decides what an email says.</p>
+
+  <h3>3.3 What is stored</h3>
+  <ul>
+    <li>Messages and their metadata are stored in the application’s own database. Incoming HTML is sanitised before storage.</li>
+    <li>Attachments are stored as files on the application server, with a checksum.</li>
+    <li>The mailbox address and your tenant identity are stored so the connection can operate.</li>
+    <li>The cursor for the next retrieval (Microsoft’s delta link) is stored <strong>encrypted</strong>. It contains no credentials.</li>
+  </ul>
+
+  <h3>3.4 What is not stored</h3>
+  <ul>
+    <li><strong>No user tokens and no refresh tokens.</strong> An application flow issues none, and the access token is fetched per call and held only in memory.</li>
+    <li><strong>No passwords</strong> — neither users’ nor administrators’.</li>
+    <li>The application client secret exists only in the server’s environment configuration. It is never returned by the API and never written to logs.</li>
+  </ul>
+
+  <h2 id="en-4">4. Purposes and legal bases</h2>
+  <table>
+    <thead><tr><th>Purpose</th><th>Data</th><th>Legal basis</th></tr></thead>
+    <tbody>
+      <tr><td>Delivering the application to your organisation</td><td>Account data, application data</td><td>Performance of the agreement with your organisation</td></tr>
+      <tr><td>Turning incoming email into work items and sending replies</td><td>Email content and metadata per 3.2</td><td>Processing on behalf of your organisation, on its instructions (processor)</td></tr>
+      <tr><td>Operations, troubleshooting and security</td><td>Technical logs without message content</td><td>Legitimate interest in secure and functioning operations</td></tr>
+      <tr><td>Delivering the website</td><td>IP address in the provider’s logs</td><td>Legitimate interest in delivering the page securely</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="en-5">5. Retention</h2>
+  <ul>
+    <li>Your organisation sets the <strong>retention period per mailbox</strong>. The default is <strong>30 days</strong> and it can be set between 1 day and 10 years.</li>
+    <li>An automatic purge runs regularly and deletes threads whose retention has expired, <strong>including the attachment files on disk</strong>.</li>
+    <li>Other application data is kept for the duration of your organisation’s agreement. On termination it is deleted or returned per the agreement.</li>
+    <li>Backups rotate according to our backup routine and are overwritten within that cycle.</li>
+  </ul>
+
+  <h2 id="en-6">6. Where data is held</h2>
+  <p>The applications and their databases run on <strong>Amazon Lightsail in Stockholm (<code>eu-north-1</code>)</strong>. Backups are stored in the same region. Processing therefore takes place within the EU/EEA.</p>
+  <p>Your email stays in your own Microsoft 365 environment — we do not move it, we retrieve a copy of what is needed for case handling.</p>
+
+  <h2 id="en-7">7. Sub-processors and recipients</h2>
+  <table>
+    <thead><tr><th>Recipient</th><th>Role</th><th>Location</th></tr></thead>
+    <tbody>
+      <tr><td>Amazon Web Services (Lightsail, S3)</td><td>Hosting and storage</td><td>Stockholm, <code>eu-north-1</code></td></tr>
+      <tr><td>Microsoft</td><td>Your own Microsoft 365 environment as data source</td><td>Per your agreement with Microsoft</td></tr>
+      <tr><td>GitHub (Pages)</td><td>Delivery of the arbixit.se website</td><td>US / global CDN</td></tr>
+      <tr><td>Google (Fonts)</td><td>Web fonts on the website</td><td>US / global CDN</td></tr>
+      <tr><td>Anthropic and OpenAI</td><td>AI processing — <strong>only if the feature is enabled</strong>, see section 8</td><td>US</td></tr>
+    </tbody>
+  </table>
+  <p>Transfers to third countries take place under the safeguards applicable to each provider, primarily the European Commission’s standard contractual clauses.</p>
+  <p>We never sell personal data and never use it for third-party marketing.</p>
+
+  <h2 id="en-8">8. AI features</h2>
+  <p>Arbixit Task can summarise incoming email and suggest replies or tasks.</p>
+  <ul>
+    <li>The feature is <strong>off until the group actively enables it</strong>.</li>
+    <li>When enabled, the relevant message content is sent to Anthropic or OpenAI for processing. Under the business terms we use, your content is not used to train the provider’s models.</li>
+    <li>Summaries and suggestions are stored with the message and deleted along with it.</li>
+    <li><strong>Nothing is sent or executed automatically.</strong> Replies and tasks always require human approval.</li>
+  </ul>
+
+  <h2 id="en-9">9. Security</h2>
+  <ul>
+    <li>All traffic is encrypted over HTTPS.</li>
+    <li>Mailbox access is limited to a single designated mailbox and can be revoked by you at any time.</li>
+    <li>Logs and audit trails <strong>never</strong> contain access tokens, client secrets, message content or attachments.</li>
+    <li>Secrets are stored only in the server’s protected environment configuration and are not exposed via the API.</li>
+    <li>In the event of a personal data breach affecting your data, we notify you without undue delay so you can meet your reporting obligations.</li>
+  </ul>
+
+  <h2 id="en-10">10. How to revoke access</h2>
+  <p>Your administrator can end the connection at any time. Access stops immediately.</p>
+  <ol>
+    <li>Remove the role assignment in Exchange Online, or</li>
+    <li>remove the service principal (enterprise application) for Arbixit Task in Microsoft Entra.</li>
+  </ol>
+  <p>If you also want already-retrieved email deleted, contact us, or set the retention period to 1 day and it will be purged on the next run.</p>
+
+  <h2 id="en-11">11. Your rights</h2>
+  <p>You have the right to request access to your personal data, rectification, erasure, restriction of processing and data portability, and to object to processing based on legitimate interest.</p>
+  <p>If your request concerns data inside an application, <strong>your own organisation</strong> is the controller — please contact them first. We assist them in fulfilling the request.</p>
+  <p>You also have the right to lodge a complaint with the Swedish Authority for Privacy Protection (<strong>IMY</strong>), <a href="https://www.imy.se/">imy.se</a>.</p>
+
+  <h2 id="en-12">12. Changes</h2>
+  <p>We may update this policy as the services evolve or regulation changes. The date and version at the top show when it was last changed. Material changes are announced to affected customers.</p>
+
+  <h2 id="en-13">13. Contact</h2>
+  <p>Questions about this policy or about the processing of personal data:</p>
+  <p>Arbore AB · Havsbadsvägen 30, 262 63 Ängelholm, Sweden<br>
+  <a href="mailto:info@arbore.se">info@arbore.se</a> · <a href="tel:+46431311410">+46 431 311 410</a> · <a href="https://www.arbixit.se/">www.arbixit.se</a></p>
+</article>
+
+</main>
+
+<footer class="site-foot">
+  <div class="foot-links">
+    <a href="../">Start</a>
+    <a href="../terms/">Användarvillkor</a>
+    <a href="../privacy/" aria-current="page">Integritetspolicy</a>
+  </div>
+  <p>© 2026 Arbore AB</p>
+</footer>
+
+<script src="../legal.js"></script>
+</body>
+</html>
