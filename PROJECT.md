@@ -106,7 +106,8 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
   mejlloggen innan svar skickas – nödvändigt eftersom appen saknar
   Mail.ReadWrite (läst-markering är bäst-möjliga-försök tills den
   behörigheten beviljas). Styrs av "Mejlpolicy för digital medarbetare"
-  (05 For approval).
+  (v3, godkänd 2026-11-15, i 00 Styrning). Brevbäraren arbetar ännu enligt
+  v2: den svarar och hänvisar vidare – arbetsorder via mejl är inte byggt.
 
 ## Struktur
 

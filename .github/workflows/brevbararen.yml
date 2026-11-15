@@ -2,7 +2,7 @@ name: Brevbäraren
 
 # Bevakar Arbixits delade Claude-postlåda (adressen ligger i Actions-secreten
 # MAIL_MAILBOX och maskas därmed i loggar). Hela hanteringen styrs av
-# "Mejlpolicy för digital medarbetare" (05 For approval → 00 Styrning).
+# "Mejlpolicy för digital medarbetare" (v3, 00 Styrning).
 #
 # Varför bor brevbäraren i det publika repot? GitHub Actions är kostnadsfritt
 # och utan minutkvot i publika repon. Pollningen kör 48 ggr/dygn (~1 500
