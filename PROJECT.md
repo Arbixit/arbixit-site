@@ -47,6 +47,26 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
   `PLATFORM_READ_TOKEN` (fine-grained PAT, Contents: read på enbart
   `Arbixit/_PLATTFORM`); saknas den hoppas synken över med en varning.
   Lokalt: `node scripts/build-apps.mjs --sync` (använder din gh-inloggning).
+- **Arbetsorder via mejl (sedan 2026-11-15, försiktiga varianten).** Mejl
+  från uppdragsgivarna blir arbetsorder. Detta repo har två deterministiska
+  delar av kedjan; själva arbetet görs av arbetspasset i det privata repot
+  `arbixit-brand`, där hela flödet beskrivs.
+  - **Intag** (`scripts/mail-check.mjs` + `scripts/order.mjs`): ett mejl är en
+    order bara om avsändaren står i secreten `ORDER_SENDERS` OCH Exchange
+    intygar att mejlet är internt (`X-MS-Exchange-Organization-AuthAs:
+    Internal`). Ordern sparas i SharePoint (00 Styrning/Arbetsorder) och får
+    ett kvitto. Ordermejl når aldrig AI-steget här, och innehållet skrivs
+    inte till disk. Ett svar "ok" på ett granskningsmejl sätter ordern till
+    godkänd; allt annat svar gör att ordern görs om.
+  - **Publicering** (`scripts/order-verkstall.mjs`, sista steget i
+    pusselsynken): godkända order appliceras som patch, efter att
+    spärrlistan och testerna kontrollerats en gång till. Bara patchens egna
+    filer committas. Passar patchen inte längre görs ordern om.
+  - **Spärrat för arbetsorder:** `.github/`, `scripts/`, `test/`, `terms/`,
+    `privacy/`, `CNAME`, `CLAUDE.md`, `package.json`, `data/apps.json`,
+    designsystemet och `design/`/`motor/`.
+  - Inga adresser, ordertexter eller kundnamn får hamna i detta repo eller i
+    Actions-loggarna – skripten loggar bara antal.
 - **Keepalive.** GitHub stänger av schemalagda workflows efter 60 dagar utan
   aktivitet i repot – det hände brevbäraren 2026-10-16 och ingen märkte det
   på en månad. Pusselsynkens sista steg återaktiverar därför repots
@@ -106,8 +126,8 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
   mejlloggen innan svar skickas – nödvändigt eftersom appen saknar
   Mail.ReadWrite (läst-markering är bäst-möjliga-försök tills den
   behörigheten beviljas). Styrs av "Mejlpolicy för digital medarbetare"
-  (v3, godkänd 2026-11-15, i 00 Styrning). Brevbäraren arbetar ännu enligt
-  v2: den svarar och hänvisar vidare – arbetsorder via mejl är inte byggt.
+  (v3, godkänd 2026-11-15, i 00 Styrning). Mejl från uppdragsgivarna blir
+  arbetsorder (se nedan); övriga mejl besvaras som förut.
 
 ## Struktur
 
@@ -122,7 +142,8 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
 | `motor/index.html` | Sajt-embryot från arbetsprovet: pussel-zoom, panel, grafisk profil, WCAG-grund. Bas för apps.json-motorn. |
 | `assets/favicon.svg` | Favicon ur huvudpusselbiten. PNG/touch-ikoner kommer med brand-repots PNG-export. |
 | `design/` | Designunderlag, orört. Startfil `Arbixit Pussel.dc.html`. |
-| `test/` | Sajtkontroller (`npm test`): grundkrav, tillgänglighet, profilfärger, kantprofil, inga hemligheter, brevbärarens filer, pusslets datakedja och urvalsregler. |
+| `scripts/order.mjs`, `scripts/order-verkstall.mjs` | Arbetsorder: intagets regler och kö, samt publicering av godkända order. |
+| `test/` | Sajtkontroller (`npm test`): grundkrav, tillgänglighet, profilfärger, kantprofil, inga hemligheter, brevbärarens filer, pusslets datakedja och urvalsregler, arbetsorderns regler. |
 | `scripts/` | Brevbäraren: `graph.mjs` (auth-hjälpare), `mail-check.mjs` (deterministisk koll + loopskydd), `mail-act.mjs` (svar, läst-markering, mejllogg till SharePoint). |
 
 `piecePath` i motor/index.html har sin kanoniska källa i

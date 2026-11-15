@@ -14,7 +14,7 @@
 //   (annat svar) │
 //             ▼  │
 //           andring          fraga = väntar på svar på en motfråga
-//                            rott  = kräver Magnus eller Pierre själva
+//                            rott  = kräver en uppdragsgivare själv
 //                            fel   = gick inte att genomföra
 //
 // Uppdragsgivarnas adresser ligger i Actions-secreten ORDER_SENDERS
