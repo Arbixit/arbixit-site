@@ -11,6 +11,9 @@ Läs `PROJECT.md` – där finns läget, strukturen och nästa steg. Mandatmodel
   av Magnus eller Pierre.
 - **Rött (endast Magnus/Pierre):** DNS, domän, konton, behörigheter.
 
+Mejl från uppdragsgivarna blir arbetsorder (se PROJECT.md). Ändringar från
+en order publiceras först efter ett "ok" per mejl.
+
 Repot är **publikt**: inga hemligheter, inga stage-adresser, inga kundnamn
 och inga mejladresser i filer. `design/` är designunderlag – integrera inte
 utan beslut.

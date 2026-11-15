@@ -13,6 +13,8 @@ name: Pusselsynk
 # ENBART Arbixit/_PLATTFORM. Saknas den hoppas synken över med en varning –
 # keepalive-steget körs ändå.
 #
+# Sist publiceras godkända arbetsorder (scripts/order-verkstall.mjs).
+#
 # Keepalive: GitHub stänger av schemalagda workflows i repon utan aktivitet
 # på 60 dagar (det hände brevbäraren 2026-10-16). Sista steget återaktiverar
 # därför repots schemalagda workflows varje körning, vilket nollställer
@@ -75,6 +77,25 @@ jobs:
           # Pages bygger normalt själv vid push; knuffen är hängslen ifall en
           # push med GITHUB_TOKEN inte skulle trigga bygget.
           gh api -X POST "repos/$GITHUB_REPOSITORY/pages/builds" --silent || echo "::warning::Kunde inte begära Pages-bygge."
+      - name: Publicera godkända arbetsorder
+        # Försiktiga varianten (beslut 2026-11-15): en ändring från en
+        # arbetsorder publiceras först när en uppdragsgivare svarat ok per
+        # mejl. Steget kontrollerar spärrlistan och testerna igen innan push.
+        id: order
+        env:
+          GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
+          GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
+          GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
+          MAIL_MAILBOX: ${{ secrets.MAIL_MAILBOX }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull -q --ff-only
+          node scripts/order-verkstall.mjs
+          if [ "$(grep -c '^publicerade=[1-9]' "$GITHUB_OUTPUT")" != "0" ]; then
+            gh api -X POST "repos/$GITHUB_REPOSITORY/pages/builds" --silent || echo "::warning::Kunde inte begära Pages-bygge."
+          fi
       - name: Keepalive för schemalagda workflows
         if: always()
         env:

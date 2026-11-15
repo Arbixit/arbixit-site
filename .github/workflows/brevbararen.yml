@@ -17,6 +17,8 @@ name: Brevbäraren
 #  - svar skickas deterministiskt av mail-act.mjs via Graph "reply": mottagaren
 #    kan aldrig väljas av AI, nya mejl kan inte skapas, signaturen läggs alltid
 #    på, max 5 svar per körning, allt loggas till 00 Styrning på SharePoint
+#  - arbetsorder (mejl från uppdragsgivarna) registreras deterministiskt i
+#    SharePoint och når aldrig AI-steget; innehållet skrivs inte till disk här
 #  - dubblettskydd: hanterade mejl bokförs som markörer i mejlloggen INNAN
 #    svar skickas – samma mejl kan aldrig besvaras två gånger, även om
 #    läst-markeringen misslyckas (appen saknar i dag Mail.ReadWrite)
@@ -47,6 +49,9 @@ jobs:
           GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
           GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
           MAIL_MAILBOX: ${{ secrets.MAIL_MAILBOX }}
+          # Uppdragsgivarnas adresser (kommaseparerade). Mejl från dem som
+          # Exchange intygar är interna blir arbetsorder – se scripts/order.mjs.
+          ORDER_SENDERS: ${{ secrets.ORDER_SENDERS }}
         run: node scripts/mail-check.mjs --post "$RUNNER_TEMP/postlada" --utkorg "$RUNNER_TEMP/utkorg"
       - name: Läs och föreslå åtgärd (AI-steget, endast vid ny post)
         if: steps.kolla.outputs.aibehov != '0'
