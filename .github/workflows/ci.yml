@@ -1,7 +1,6 @@
 name: CI
 
-# Bygg och test – ingen deploy. Pages-deploy aktiveras först efter
-# godkännande enligt mandatmodellen (DNS och livesättning är röda beslut).
+# Test vid push och PR. Deploy sköts av GitHub Pages, som publicerar main.
 on:
   push:
     branches: [main]

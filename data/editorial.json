@@ -1,0 +1,41 @@
+{
+  "_kommentar": "Redaktionellt lager för pusslet på arbixit.se. Nyckeln är appens namn i Arbixit-dashboardens tabell 'Aktiva projekt'. Status och länk kommer ALDRIG härifrån – de hämtas från dashboarden av scripts/build-apps.mjs. Här ligger bara det dashboarden inte vet: visningsnamn, färg (hue), initialer, ikon och texter. Sätt \"public\": false för att hålla en app borta från sajten. Nya texter är gult flöde (utkast → godkännande).",
+  "apps": {
+    "crm": {
+      "id": "crm", "name": "CRM", "hue": 250, "mono": "Cr",
+      "tag": { "sv": "Kundregister & pipeline", "en": "CRM & pipeline" },
+      "blurb": { "sv": "Samla kontakter, affärer och uppföljning på ett och samma ställe.", "en": "Contacts, deals and follow-ups gathered in one place." },
+      "features": { "sv": ["Kontakt- & företagsregister", "Visuell affärspipeline", "Aktiviteter & påminnelser", "Rapporter & prognoser"], "en": ["Contact & company records", "Visual deal pipeline", "Activities & reminders", "Reports & forecasts"] }
+    },
+    "fineprint": {
+      "id": "fineprint", "name": "Fineprint", "hue": 292, "mono": "Fp",
+      "tag": { "sv": "Dokument & avtal", "en": "Documents & contracts" },
+      "blurb": { "sv": "Skapa, granska och signera dokument utifrån färdiga mallar.", "en": "Create, review and sign documents from ready-made templates." },
+      "features": { "sv": ["Dokumentmallar", "Versionshantering", "PDF-generering", "Digital signering"], "en": ["Document templates", "Version history", "PDF generation", "Digital signing"] }
+    },
+    "PlantTools": {
+      "id": "planttools", "name": "PlantTools", "hue": 150, "mono": "Pt", "icon": "icons/planttools.png",
+      "tag": { "sv": "Drift & anläggning", "en": "Operations & assets" },
+      "blurb": { "sv": "Håll koll på anläggningar, sensorer och underhåll i realtid.", "en": "Keep track of assets, sensors and maintenance in real time." },
+      "features": { "sv": ["Live sensordata", "Underhållsscheman", "Digitala checklistor", "Larm & notiser"], "en": ["Live sensor data", "Maintenance schedules", "Digital checklists", "Alerts & notifications"] }
+    },
+    "Postiljon": {
+      "id": "postiljon", "name": "Postiljon", "hue": 72, "mono": "Po",
+      "tag": { "sv": "Utskick & notiser", "en": "Messaging & notifications" },
+      "blurb": { "sv": "Skicka e-post och SMS med mallar och robust köhantering.", "en": "Send email and SMS with templates and robust queueing." },
+      "features": { "sv": ["E-post & SMS", "Meddelandemallar", "Köhantering", "Leveransstatus"], "en": ["Email & SMS", "Message templates", "Queue handling", "Delivery status"] }
+    },
+    "Citadel": {
+      "id": "citadel", "name": "Citadel", "hue": 195, "mono": "Ci", "icon": "icons/citadel.png",
+      "tag": { "sv": "Identitet & åtkomst", "en": "Identity & access" },
+      "blurb": { "sv": "Central inloggning, behörigheter och full revisionslogg.", "en": "Central sign-in, permissions and a full audit log." },
+      "features": { "sv": ["Single sign-on", "Roller & behörigheter", "Revisionslogg", "Hemlighetshantering"], "en": ["Single sign-on", "Roles & permissions", "Audit log", "Secrets management"] }
+    },
+    "simple-task-manager": {
+      "id": "tasks", "name": "Task Manager", "hue": 30, "mono": "Tm", "icon": "icons/tasks.png",
+      "tag": { "sv": "Uppgiftshantering", "en": "Task management" },
+      "blurb": { "sv": "Planera uppgifter på tavlor med deadlines och tilldelning.", "en": "Plan tasks on boards with deadlines and assignments." },
+      "features": { "sv": ["Uppgifter & tavlor", "Deadlines", "Tilldelning", "Statusflöden"], "en": ["Tasks & boards", "Deadlines", "Assignments", "Status flows"] }
+    }
+  }
+}

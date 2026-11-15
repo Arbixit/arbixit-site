@@ -1,0 +1,32 @@
+{
+  "source": "Arbixit-dashboarden, tabellen Aktiva projekt",
+  "apps": [
+    {
+      "name": "crm",
+      "status": "prod",
+      "url": "https://crm.arbixit.se"
+    },
+    {
+      "name": "PlantTools",
+      "status": "prod",
+      "url": "https://planttools.arbixit.se"
+    },
+    {
+      "name": "simple-task-manager",
+      "status": "prod",
+      "url": "https://task.arbixit.se"
+    },
+    {
+      "name": "fineprint",
+      "status": "stage"
+    },
+    {
+      "name": "Postiljon",
+      "status": "stage"
+    },
+    {
+      "name": "Citadel",
+      "status": "stage"
+    }
+  ]
+}
