@@ -1,0 +1,86 @@
+name: Pusselsynk
+
+# Håller pusslet på arbixit.se i takt med Arbixit-dashboardens tabell
+# "Aktiva projekt". Källan är _PLATTFORM/config/apps.json – samma fil som
+# dashboarden genereras ur. Helt deterministiskt, inga AI-anrop.
+#
+# Mandat (Magnus 2026-11-15): status- och länkändringar samt nya prod-appar
+# deployas automatiskt efter gröna tester (grönt flöde). Nya sajttexter är
+# fortsatt gult flöde – en ny app går ut med neutral text tills texten är
+# godkänd. Urvalsreglerna står överst i scripts/build-apps.mjs.
+#
+# Kräver secreten PLATFORM_READ_TOKEN: fine-grained PAT med Contents: read på
+# ENBART Arbixit/_PLATTFORM. Saknas den hoppas synken över med en varning –
+# keepalive-steget körs ändå.
+#
+# Keepalive: GitHub stänger av schemalagda workflows i repon utan aktivitet
+# på 60 dagar (det hände brevbäraren 2026-10-16). Sista steget återaktiverar
+# därför repots schemalagda workflows varje körning, vilket nollställer
+# inaktivitetsklockan.
+on:
+  schedule:
+    - cron: '23 * * * *' # varje timme (gratis i publika repon)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  pages: write
+
+concurrency:
+  group: pusselsynk
+  cancel-in-progress: false
+
+jobs:
+  synk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Kontrollera läs-token
+        id: token
+        env:
+          PLATFORM_READ_TOKEN: ${{ secrets.PLATFORM_READ_TOKEN }}
+        run: |
+          if [ -z "$PLATFORM_READ_TOKEN" ]; then
+            echo "::warning::PLATFORM_READ_TOKEN saknas – pusslet synkas inte mot dashboarden."
+            echo "finns=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "finns=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Hämta läget från dashboarden och bygg om pusslet
+        if: steps.token.outputs.finns == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PLATFORM_READ_TOKEN }}
+        run: node scripts/build-apps.mjs --sync
+      - name: Test
+        if: steps.token.outputs.finns == 'true'
+        run: npm test
+      - name: Committa och deploya vid diff
+        if: steps.token.outputs.finns == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- data/apps.json index.html; then
+            echo "Ingen förändring – ingen commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/apps.json index.html
+          git commit -m "Pusselsynk: dashboarden har ändrats"
+          git push
+          # Pages bygger normalt själv vid push; knuffen är hängslen ifall en
+          # push med GITHUB_TOKEN inte skulle trigga bygget.
+          gh api -X POST "repos/$GITHUB_REPOSITORY/pages/builds" --silent || echo "::warning::Kunde inte begära Pages-bygge."
+      - name: Keepalive för schemalagda workflows
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for wf in pusselsynk.yml brevbararen.yml; do
+            gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/$wf/enable" --silent \
+              || echo "::warning::Kunde inte återaktivera $wf."
+          done

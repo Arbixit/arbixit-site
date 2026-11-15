@@ -1,6 +1,6 @@
 ---
 author: magnus@tqvist.se
-uppdaterad: 2026-08-16
+uppdaterad: 2026-11-15
 ---
 
 # arbixit-site
@@ -13,6 +13,44 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
 
 ## Läge just nu
 
+- **Pusslet följer dashboarden (sedan 2026-11-15).** App-listan i
+  `index.html` är inte längre hårdkodad utan genereras av
+  `scripts/build-apps.mjs`:
+
+  ```
+  _PLATTFORM/config/apps.json   källan bakom dashboardens "Aktiva projekt"
+        │  --sync (urval + tvätt, se nedan)
+        ▼
+  data/apps.json                publikt: namn, status, prod-länk
+        │  + data/editorial.json (visningsnamn, färg, ikon, texter)
+        ▼
+  index.html                    blocket mellan APPS:START/APPS:END + noscript
+  ```
+
+  **Urval** (beslut Magnus 2026-11-15): prod på delade plattformen
+  (`platform1`) blir aktiv bit automatiskt, även helt nya appar – de får
+  neutral text tills riktig text godkänts (gult flöde). Prod på egen instans
+  (kundboxar) visas bara om appen finns i `data/editorial.json`. Stage visas
+  som nedtonad "på väg"-bit utan länk, och bara om appen finns i
+  `data/editorial.json`. Status `none` och `"public": false` visas aldrig.
+  Lediga platser (pusslet har åtta runt mittbiten) ritas som streckade
+  "Ledig plats"-bitar. Blir de publika apparna fler än åtta varnar synken
+  och visar de åtta första (prod före stage) – då behöver layouten byggas ut.
+
+  **Publikt repo:** stage-adresser, miljötexter, kundboxar och appar utanför
+  plattformen skrivs aldrig hit; `data/apps.json` innehåller bara det som
+  ändå syns på sajten.
+
+  **Drift:** `.github/workflows/pusselsynk.yml` kör varje timme: synk →
+  test → commit vid diff → Pages deployar. Grönt flöde enligt
+  mandatmodellen – ingen handpåläggning. Kräver secreten
+  `PLATFORM_READ_TOKEN` (fine-grained PAT, Contents: read på enbart
+  `Arbixit/_PLATTFORM`); saknas den hoppas synken över med en varning.
+  Lokalt: `node scripts/build-apps.mjs --sync` (använder din gh-inloggning).
+- **Keepalive.** GitHub stänger av schemalagda workflows efter 60 dagar utan
+  aktivitet i repot – det hände brevbäraren 2026-10-16 och ingen märkte det
+  på en månad. Pusselsynkens sista steg återaktiverar därför repots
+  schemalagda workflows varje körning.
 - **`index.html` är designprototypen** – livesatt 2026-07-21 enligt
   INSTRUKTION.md väg A (godkänt av Magnus i chatt). Prototypens filer
   (`support.js`, `arbixit-logo.svg`, `icons/`, `_ds/`) ligger kopierade i
@@ -74,14 +112,16 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
 
 | Sökväg | Innehåll |
 |---|---|
-| `index.html` + `support.js`, `arbixit-logo.svg`, `icons/`, `_ds/` | Startsidan: designprototypen (Organic-designsystemet), livesatt via Pages. Footern länkar till villkor och policy. |
+| `index.html` + `support.js`, `arbixit-logo.svg`, `icons/`, `_ds/` | Startsidan: designprototypen (Organic-designsystemet), livesatt via Pages. App-listan är genererad – redigera den inte för hand. Footern länkar till villkor och policy. |
+| `data/apps.json` | Publik app-data (namn, status, prod-länk), skriven av `build-apps.mjs --sync`. |
+| `data/editorial.json` | Redaktionellt lager per app: visningsnamn, färg, initialer, ikon, texter, ev. `"public": false`. |
 | `terms/`, `privacy/` | Användarvillkor och integritetspolicy, SV+EN i samma dokument. |
 | `legal.css`, `legal.js` | Delad stil och SV/EN-växling för de juridiska sidorna. |
 | `CNAME` | www.arbixit.se – Pages custom domain. HTTPS aktivt (Let's Encrypt). |
 | `motor/index.html` | Sajt-embryot från arbetsprovet: pussel-zoom, panel, grafisk profil, WCAG-grund. Bas för apps.json-motorn. |
 | `assets/favicon.svg` | Favicon ur huvudpusselbiten. PNG/touch-ikoner kommer med brand-repots PNG-export. |
 | `design/` | Designunderlag, orört. Startfil `Arbixit Pussel.dc.html`. |
-| `test/` | Sajtkontroller (`npm test`): grundkrav, tillgänglighet, profilfärger, kantprofil, inga hemligheter, brevbärarens filer. |
+| `test/` | Sajtkontroller (`npm test`): grundkrav, tillgänglighet, profilfärger, kantprofil, inga hemligheter, brevbärarens filer, pusslets datakedja och urvalsregler. |
 | `scripts/` | Brevbäraren: `graph.mjs` (auth-hjälpare), `mail-check.mjs` (deterministisk koll + loopskydd), `mail-act.mjs` (svar, läst-markering, mejllogg till SharePoint). |
 
 `piecePath` i motor/index.html har sin kanoniska källa i
@@ -95,9 +135,8 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
    med avslutande snedstreck (Microsofts form, och det registret dokumenterar).
    Task-registreringen är klar sedan 2026-08-16.
 2. Byt in `arbore-sf-sv.svg` som header-logga när filen finns i underlaget.
-3. Ersätt prototypens platshållartexter/-länkar per app och lägg ikoner för
-   crm, fineprint, postiljon, rocketchat, showroom (se design/INSTRUKTION.md).
-4. Bygg pusslet från `apps.json` i stället för hårdkodad app-data
-   (repository_dispatch + daglig cron enligt tekniska arbetsupplägget) –
-   utveckling sker i `motor/`.
-5. Lighthouse-, axe- och länkkontroll i CI.
+3. Ersätt prototypens platshållartexter per app i `data/editorial.json`
+   (gult flöde – utkast till 05 For approval) och lägg ikoner för crm,
+   fineprint och postiljon. Länkarna är klara: de kommer från dashboarden.
+4. Lighthouse-, axe- och länkkontroll i CI.
+5. Bygg ut layouten när de publika apparna blir fler än åtta.

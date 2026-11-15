@@ -9,6 +9,19 @@
 <script src="./support.js"></script>
 </head>
 <body>
+<!-- APPS-NOSCRIPT:START – genererat av scripts/build-apps.mjs -->
+<noscript>
+  <h1>Arbixit – ett pussel av appar</h1>
+  <ul>
+    <li><a href="https://crm.arbixit.se">CRM</a> – Kundregister &amp; pipeline</li>
+    <li><a href="https://planttools.arbixit.se">PlantTools</a> – Drift &amp; anläggning</li>
+    <li><a href="https://task.arbixit.se">Task Manager</a> – Uppgiftshantering</li>
+    <li>Fineprint – Dokument &amp; avtal (på väg)</li>
+    <li>Postiljon – Utskick &amp; notiser (på väg)</li>
+    <li>Citadel – Identitet &amp; åtkomst (på väg)</li>
+  </ul>
+</noscript>
+<!-- APPS-NOSCRIPT:END -->
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,8 +72,8 @@ a:hover{color:oklch(0.88 0.10 255)}
                 </linearGradient>
               </defs>
               <sc-for list="{{ pieces }}" as="p" hint-placeholder-count="9">
-                <path d="{{ p.d }}" fill="{{ p.color }}" stroke="{{ p.stroke }}" stroke-width="2.5" opacity="{{ p.opacity }}" onClick="{{ p.onClick }}" style="cursor:pointer;transition:opacity .45s ease"></path>
-                <path d="{{ p.d }}" fill="url(#arbSheen)" opacity="{{ p.opacity }}" onClick="{{ p.onClick }}" style="cursor:pointer;pointer-events:none;transition:opacity .45s ease"></path>
+                <path d="{{ p.d }}" fill="{{ p.color }}" stroke="{{ p.stroke }}" stroke-width="2.5" stroke-dasharray="{{ p.dash }}" opacity="{{ p.opacity }}" onClick="{{ p.onClick }}" style="{{ p.pathStyle }}"></path>
+                <path d="{{ p.d }}" fill="url(#arbSheen)" opacity="{{ p.sheen }}" style="pointer-events:none;transition:opacity .45s ease"></path>
               </sc-for>
             </svg>
             <sc-for list="{{ pieces }}" as="p" hint-placeholder-count="9">
@@ -78,10 +91,16 @@ a:hover{color:oklch(0.88 0.10 255)}
                     <div style="width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:oklch(1 0 0 / 0.16);border:1.5px solid oklch(1 0 0 / 0.4);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:oklch(1 0 0 / 0.95)">{{ p.mono }}</div>
                   </sc-if>
                 </sc-if>
-                <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:oklch(1 0 0 / 0.96);line-height:1.15;text-shadow:0 1px 4px oklch(0 0 0 / 0.35)">{{ p.name }}</div>
-                <div style="display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:oklch(1 0 0 / 0.82)">
-                  <span style="{{ p.dotStyle }}"></span>{{ p.envLabel }}
-                </div>
+                <sc-if value="{{ p.isGhost }}" hint-placeholder-val="{{ false }}">
+                  <div aria-hidden="true" style="width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1.5px dashed oklch(0.52 0.03 265);font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:20px;line-height:1;color:oklch(0.62 0.03 265)">+</div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:oklch(0.60 0.02 265)">{{ p.name }}</div>
+                </sc-if>
+                <sc-if value="{{ p.isReal }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:oklch(1 0 0 / 0.96);line-height:1.15;text-shadow:0 1px 4px oklch(0 0 0 / 0.35)">{{ p.name }}</div>
+                  <div style="display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:oklch(1 0 0 / 0.82)">
+                    <span style="{{ p.dotStyle }}"></span>{{ p.envLabel }}
+                  </div>
+                </sc-if>
               </div>
             </sc-for>
           </div>
@@ -114,6 +133,7 @@ a:hover{color:oklch(0.88 0.10 255)}
 
             <p style="font-size:15px;line-height:1.6;color:oklch(0.82 0.012 265);margin-top:16px;text-wrap:pretty">{{ detail.blurb }}</p>
 
+            <sc-if value="{{ detail.hasFeatures }}" hint-placeholder-val="{{ true }}">
             <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.64 0.015 265);margin:22px 0 12px">{{ t.features }}</div>
             <div style="display:flex;flex-direction:column;gap:10px">
               <sc-for list="{{ detail.features }}" as="f" hint-placeholder-count="4">
@@ -123,9 +143,15 @@ a:hover{color:oklch(0.88 0.10 255)}
                 </div>
               </sc-for>
             </div>
+            </sc-if>
 
-            <a href="{{ detail.url }}" target="_blank" rel="noopener" style="{{ ctaStyle }}">{{ detail.cta }} <span style="font-size:15px">↗</span></a>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:oklch(0.58 0.015 265);margin-top:12px;text-align:center;word-break:break-all">{{ detail.host }}</div>
+            <sc-if value="{{ detail.hasLink }}" hint-placeholder-val="{{ true }}">
+              <a href="{{ detail.url }}" target="_blank" rel="noopener" style="{{ ctaStyle }}">{{ detail.cta }} <span style="font-size:15px">↗</span></a>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:oklch(0.58 0.015 265);margin-top:12px;text-align:center;word-break:break-all">{{ detail.host }}</div>
+            </sc-if>
+            <sc-if value="{{ detail.noLink }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ soonStyle }}">{{ t.soon }}</div>
+            </sc-if>
           </div>
         </aside>
       </sc-if>
@@ -184,12 +210,13 @@ class Component extends DCLogic {
     const sel = this.state.sel;
 
     const t = {
-      sv: { eyebrow: 'En plattform · många appar', title: 'Ett pussel av appar', sub: 'Varje app vi bygger är en pusselbit som passar in i Arbixit-plattformen. Klicka på en bit för att zooma in.', hint: 'Klicka på en pusselbit', grid: 'Rutnät', radial: 'Radiell', features: 'Nyckelfunktioner', growth: 'Pusslet växer när nya appar tillkommer', cta: 'Öppna appen', terms: 'Användarvillkor', privacy: 'Integritetspolicy' },
-      en: { eyebrow: 'One platform · many apps', title: 'A puzzle of apps', sub: 'Every app we build is a puzzle piece that clicks into the Arbixit platform. Tap a piece to zoom in.', hint: 'Click a puzzle piece', grid: 'Grid', radial: 'Radial', features: 'Key features', growth: 'The puzzle grows as new apps arrive', cta: 'Open the app', terms: 'Terms of Service', privacy: 'Privacy Policy' }
+      sv: { eyebrow: 'En plattform · många appar', title: 'Ett pussel av appar', sub: 'Varje app vi bygger är en pusselbit som passar in i Arbixit-plattformen. Klicka på en bit för att zooma in.', hint: 'Klicka på en pusselbit', grid: 'Rutnät', radial: 'Radiell', features: 'Nyckelfunktioner', growth: 'Pusslet växer när nya appar tillkommer', cta: 'Öppna appen', soon: 'Lanseras snart', ghost: 'Ledig plats', live: 'LIVE', coming: 'PÅ VÄG', platform: 'PLATTFORM', terms: 'Användarvillkor', privacy: 'Integritetspolicy' },
+      en: { eyebrow: 'One platform · many apps', title: 'A puzzle of apps', sub: 'Every app we build is a puzzle piece that clicks into the Arbixit platform. Tap a piece to zoom in.', hint: 'Click a puzzle piece', grid: 'Grid', radial: 'Radial', features: 'Key features', growth: 'The puzzle grows as new apps arrive', cta: 'Open the app', soon: 'Launching soon', ghost: 'Open slot', live: 'LIVE', coming: 'COMING SOON', platform: 'PLATFORM', terms: 'Terms of Service', privacy: 'Privacy Policy' }
     }[lang];
 
     const H = (hue) => `oklch(0.70 0.145 ${hue})`;
     const HS = (hue) => `oklch(0.42 0.11 ${hue})`;
+    const HD = (hue) => `oklch(0.50 0.075 ${hue})`;
 
     const CENTER = {
       id: 'c', hue: 265, mono: 'Ax',
@@ -200,45 +227,201 @@ class Component extends DCLogic {
       features: { sv: ['Gemensam inloggning', 'Delad datamodell', 'Skräddarsytt per verksamhet', 'Byggs på efter hand'], en: ['Shared sign-in', 'Shared data model', 'Tailored per business', 'Grows over time'] }
     };
 
+    /* APPS:START – genererat av scripts/build-apps.mjs, redigera inte för hand */
     const APPS = [
-      { id: 'crm', hue: 250, mono: 'Cr', name: 'CRM', env: 'stage', url: 'https://stage.crm.arbixit.se',
-        tag: { sv: 'Kundregister & pipeline', en: 'CRM & pipeline' },
-        blurb: { sv: 'Samla kontakter, affärer och uppföljning på ett och samma ställe.', en: 'Contacts, deals and follow-ups gathered in one place.' },
-        features: { sv: ['Kontakt- & företagsregister', 'Visuell affärspipeline', 'Aktiviteter & påminnelser', 'Rapporter & prognoser'], en: ['Contact & company records', 'Visual deal pipeline', 'Activities & reminders', 'Reports & forecasts'] } },
-      { id: 'fineprint', hue: 292, mono: 'Fp', name: 'Fineprint', env: 'stage', url: 'https://stage.fineprint.arbixit.se',
-        tag: { sv: 'Dokument & avtal', en: 'Documents & contracts' },
-        blurb: { sv: 'Skapa, granska och signera dokument utifrån färdiga mallar.', en: 'Create, review and sign documents from ready-made templates.' },
-        features: { sv: ['Dokumentmallar', 'Versionshantering', 'PDF-generering', 'Digital signering'], en: ['Document templates', 'Version history', 'PDF generation', 'Digital signing'] } },
-      { id: 'planttools', hue: 150, mono: 'Pt', name: 'PlantTools', env: 'prod', url: 'https://planttools.arbixit.se',
-        tag: { sv: 'Drift & anläggning', en: 'Operations & assets' },
-        blurb: { sv: 'Håll koll på anläggningar, sensorer och underhåll i realtid.', en: 'Keep track of assets, sensors and maintenance in real time.' },
-        features: { sv: ['Live sensordata', 'Underhållsscheman', 'Digitala checklistor', 'Larm & notiser'], en: ['Live sensor data', 'Maintenance schedules', 'Digital checklists', 'Alerts & notifications'] } },
-      { id: 'postiljon', hue: 72, mono: 'Po', name: 'Postiljon', env: 'stage', url: 'https://stage.postiljon.arbixit.se',
-        tag: { sv: 'Utskick & notiser', en: 'Messaging & notifications' },
-        blurb: { sv: 'Skicka e-post och SMS med mallar och robust köhantering.', en: 'Send email and SMS with templates and robust queueing.' },
-        features: { sv: ['E-post & SMS', 'Meddelandemallar', 'Köhantering', 'Leveransstatus'], en: ['Email & SMS', 'Message templates', 'Queue handling', 'Delivery status'] } },
-      { id: 'citadel', hue: 195, mono: 'Ci', name: 'Citadel', env: 'stage', url: 'https://stage.citadel.arbixit.se',
-        tag: { sv: 'Identitet & åtkomst', en: 'Identity & access' },
-        blurb: { sv: 'Central inloggning, behörigheter och full revisionslogg.', en: 'Central sign-in, permissions and a full audit log.' },
-        features: { sv: ['Single sign-on', 'Roller & behörigheter', 'Revisionslogg', 'Hemlighetshantering'], en: ['Single sign-on', 'Roles & permissions', 'Audit log', 'Secrets management'] } },
-      { id: 'rocketchat', hue: 312, mono: 'Rc', name: 'Rocketchat', env: 'stage', url: 'https://chat.florami.se',
-        tag: { sv: 'Teamchatt', en: 'Team chat' },
-        blurb: { sv: 'Kanaler, direktmeddelanden och integrationer för teamet.', en: 'Channels, direct messages and integrations for the team.' },
-        features: { sv: ['Kanaler & trådar', 'Direktmeddelanden', 'Fildelning', 'Integrationer'], en: ['Channels & threads', 'Direct messages', 'File sharing', 'Integrations'] } },
-      { id: 'showroom', hue: 350, mono: 'Sr', name: 'Showroom', env: 'stage', url: 'https://showroom.florami.se',
-        tag: { sv: 'Produktshowroom', en: 'Product showroom' },
-        blurb: { sv: 'Visa upp produkter och media med delbara länkar.', en: 'Showcase products and media with shareable links.' },
-        features: { sv: ['Produktkatalog', 'Media & bilder', 'Delningslänkar', 'Varumärkning'], en: ['Product catalog', 'Media & images', 'Shareable links', 'Branding'] } },
-      { id: 'tasks', hue: 30, mono: 'Tm', name: 'Task Manager', env: 'stage', url: 'https://stage.simple-task-manager.arbixit.se',
-        tag: { sv: 'Uppgiftshantering', en: 'Task management' },
-        blurb: { sv: 'Planera uppgifter på tavlor med deadlines och tilldelning.', en: 'Plan tasks on boards with deadlines and assignments.' },
-        features: { sv: ['Uppgifter & tavlor', 'Deadlines', 'Tilldelning', 'Statusflöden'], en: ['Tasks & boards', 'Deadlines', 'Assignments', 'Status flows'] } }
+      {
+        "id": "crm",
+        "hue": 250,
+        "mono": "Cr",
+        "name": "CRM",
+        "tag": {
+          "sv": "Kundregister & pipeline",
+          "en": "CRM & pipeline"
+        },
+        "blurb": {
+          "sv": "Samla kontakter, affärer och uppföljning på ett och samma ställe.",
+          "en": "Contacts, deals and follow-ups gathered in one place."
+        },
+        "features": {
+          "sv": [
+            "Kontakt- & företagsregister",
+            "Visuell affärspipeline",
+            "Aktiviteter & påminnelser",
+            "Rapporter & prognoser"
+          ],
+          "en": [
+            "Contact & company records",
+            "Visual deal pipeline",
+            "Activities & reminders",
+            "Reports & forecasts"
+          ]
+        },
+        "env": "prod",
+        "url": "https://crm.arbixit.se",
+        "icon": ""
+      },
+      {
+        "id": "planttools",
+        "hue": 150,
+        "mono": "Pt",
+        "name": "PlantTools",
+        "tag": {
+          "sv": "Drift & anläggning",
+          "en": "Operations & assets"
+        },
+        "blurb": {
+          "sv": "Håll koll på anläggningar, sensorer och underhåll i realtid.",
+          "en": "Keep track of assets, sensors and maintenance in real time."
+        },
+        "features": {
+          "sv": [
+            "Live sensordata",
+            "Underhållsscheman",
+            "Digitala checklistor",
+            "Larm & notiser"
+          ],
+          "en": [
+            "Live sensor data",
+            "Maintenance schedules",
+            "Digital checklists",
+            "Alerts & notifications"
+          ]
+        },
+        "env": "prod",
+        "url": "https://planttools.arbixit.se",
+        "icon": "icons/planttools.png"
+      },
+      {
+        "id": "tasks",
+        "hue": 30,
+        "mono": "Tm",
+        "name": "Task Manager",
+        "tag": {
+          "sv": "Uppgiftshantering",
+          "en": "Task management"
+        },
+        "blurb": {
+          "sv": "Planera uppgifter på tavlor med deadlines och tilldelning.",
+          "en": "Plan tasks on boards with deadlines and assignments."
+        },
+        "features": {
+          "sv": [
+            "Uppgifter & tavlor",
+            "Deadlines",
+            "Tilldelning",
+            "Statusflöden"
+          ],
+          "en": [
+            "Tasks & boards",
+            "Deadlines",
+            "Assignments",
+            "Status flows"
+          ]
+        },
+        "env": "prod",
+        "url": "https://task.arbixit.se",
+        "icon": "icons/tasks.png"
+      },
+      {
+        "id": "fineprint",
+        "hue": 292,
+        "mono": "Fp",
+        "name": "Fineprint",
+        "tag": {
+          "sv": "Dokument & avtal",
+          "en": "Documents & contracts"
+        },
+        "blurb": {
+          "sv": "Skapa, granska och signera dokument utifrån färdiga mallar.",
+          "en": "Create, review and sign documents from ready-made templates."
+        },
+        "features": {
+          "sv": [
+            "Dokumentmallar",
+            "Versionshantering",
+            "PDF-generering",
+            "Digital signering"
+          ],
+          "en": [
+            "Document templates",
+            "Version history",
+            "PDF generation",
+            "Digital signing"
+          ]
+        },
+        "env": "stage",
+        "url": "",
+        "icon": ""
+      },
+      {
+        "id": "postiljon",
+        "hue": 72,
+        "mono": "Po",
+        "name": "Postiljon",
+        "tag": {
+          "sv": "Utskick & notiser",
+          "en": "Messaging & notifications"
+        },
+        "blurb": {
+          "sv": "Skicka e-post och SMS med mallar och robust köhantering.",
+          "en": "Send email and SMS with templates and robust queueing."
+        },
+        "features": {
+          "sv": [
+            "E-post & SMS",
+            "Meddelandemallar",
+            "Köhantering",
+            "Leveransstatus"
+          ],
+          "en": [
+            "Email & SMS",
+            "Message templates",
+            "Queue handling",
+            "Delivery status"
+          ]
+        },
+        "env": "stage",
+        "url": "",
+        "icon": ""
+      },
+      {
+        "id": "citadel",
+        "hue": 195,
+        "mono": "Ci",
+        "name": "Citadel",
+        "tag": {
+          "sv": "Identitet & åtkomst",
+          "en": "Identity & access"
+        },
+        "blurb": {
+          "sv": "Central inloggning, behörigheter och full revisionslogg.",
+          "en": "Central sign-in, permissions and a full audit log."
+        },
+        "features": {
+          "sv": [
+            "Single sign-on",
+            "Roller & behörigheter",
+            "Revisionslogg",
+            "Hemlighetshantering"
+          ],
+          "en": [
+            "Single sign-on",
+            "Roles & permissions",
+            "Audit log",
+            "Secrets management"
+          ]
+        },
+        "env": "stage",
+        "url": "",
+        "icon": "icons/citadel.png"
+      }
     ];
+    /* APPS:END */
 
     const envMeta = {
-      prod: { label: 'PROD', dot: 'oklch(0.75 0.16 150)' },
-      stage: { label: 'STAGE', dot: 'oklch(0.80 0.15 80)' },
-      core: { label: 'PLATFORM', dot: 'oklch(0.85 0.10 265)' }
+      prod: { label: t.live, dot: 'oklch(0.75 0.16 150)' },
+      stage: { label: t.coming, dot: 'oklch(0.80 0.15 80)' },
+      core: { label: t.platform, dot: 'oklch(0.85 0.10 265)' }
     };
 
     // ---- geometry ----
@@ -270,29 +453,21 @@ class Component extends DCLogic {
       return { d: this.piecePath(cx - sz / 2, cy - sz / 2, sz, RS[idx]), cx, cy };
     };
 
-    // Drop an app icon at ./icons/<id>.(svg|png) and add it here to show it as the avatar.
-    const ICONS = {
-      // crm: 'icons/crm.svg',
-      // fineprint: 'icons/fineprint.svg',
-      planttools: 'icons/planttools.png',
-      // postiljon: 'icons/postiljon.svg',
-      citadel: 'icons/citadel.png',
-      // rocketchat: 'icons/rocketchat.svg',
-      // showroom: 'icons/showroom.svg',
-      tasks: 'icons/tasks.png',
-    };
-
     const build = (data, idx, isCenter) => {
       const g = geom(idx, isCenter);
       const em = envMeta[data.env];
       const selected = sel === data.id;
       const opacity = sel === null ? 1 : (selected ? 1 : 0.14);
+      // "På väg"-bitar (stage) är nedtonade: lägre mättnad och ljushet.
+      const soon = data.env === 'stage';
+      const icon = isCenter ? '' : (data.icon || '');
       const cxP = (g.cx / 800 * 100), cyP = (g.cy / 800 * 100);
       return {
         id: data.id, d: g.d, cx: g.cx, cy: g.cy, cxN: cxP, cyN: cyP,
-        color: H(data.hue), stroke: HS(data.hue),
-        mono: data.mono, name: data.name, isCenter, isApp: !isCenter,
-        icon: ICONS[data.id] || '', hasIcon: !isCenter && !!ICONS[data.id], noIcon: !isCenter && !ICONS[data.id],
+        color: soon ? HD(data.hue) : H(data.hue), stroke: HS(data.hue), dash: 'none', sheen: opacity,
+        pathStyle: { cursor: 'pointer', transition: 'opacity .45s ease' },
+        mono: data.mono, name: data.name, isCenter, isApp: !isCenter, isGhost: false, isReal: true,
+        icon, hasIcon: !isCenter && !!icon, noIcon: !isCenter && !icon,
         envLabel: em.label, selected, opacity,
         onClick: () => this.pick(data.id),
         dotStyle: { width: '7px', height: '7px', borderRadius: '50%', background: em.dot, display: 'inline-block' },
@@ -305,7 +480,30 @@ class Component extends DCLogic {
       };
     };
 
-    const pieces = [build(CENTER, 0, true)].concat(APPS.map((a, i) => build(a, i, false)));
+    // Lediga platser fylls med streckade "spökbitar" så att pusslet alltid är helt
+    // och det syns var nästa app hamnar.
+    const ghost = (idx) => {
+      const g = geom(idx, false);
+      const opacity = sel === null ? 1 : 0.14;
+      const cxP = (g.cx / 800 * 100), cyP = (g.cy / 800 * 100);
+      return {
+        id: 'ghost' + idx, d: g.d, cx: g.cx, cy: g.cy, cxN: cxP, cyN: cyP,
+        color: 'oklch(0.22 0.02 265 / 0.55)', stroke: 'oklch(0.44 0.03 265)', dash: '7 7', sheen: 0,
+        pathStyle: { cursor: 'default', transition: 'opacity .45s ease' },
+        mono: '', name: t.ghost, isCenter: false, isApp: false, isGhost: true, isReal: false,
+        icon: '', hasIcon: false, noIcon: false, envLabel: '', selected: false, opacity,
+        onClick: () => {}, dotStyle: {},
+        labelStyle: {
+          position: 'absolute', left: cxP + '%', top: cyP + '%', transform: 'translate(-50%,-50%)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+          opacity, transition: 'opacity .45s ease', width: '132px', textAlign: 'center',
+          zIndex: 1, userSelect: 'none', pointerEvents: 'none'
+        }
+      };
+    };
+    const shown = APPS.slice(0, 8);
+    const pieces = [build(CENTER, 0, true)].concat(shown.map((a, i) => build(a, i, false)));
+    for (let i = shown.length; i < 8; i++) pieces.push(ghost(i));
 
     // ---- zoom transform ----
     let stageStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%', transition: 'transform .6s cubic-bezier(.22,.9,.28,1)', transformOrigin: '50% 50%' };
@@ -325,9 +523,10 @@ class Component extends DCLogic {
       const em = envMeta[selData.env];
       detail = {
         name: selData.name, mono: selData.mono, isCenter: sel === 'c', isApp: sel !== 'c',
-        icon: ICONS[selData.id] || '', hasIcon: sel !== 'c' && !!ICONS[selData.id], noIcon: sel !== 'c' && !ICONS[selData.id],
+        icon: selData.icon || '', hasIcon: sel !== 'c' && !!selData.icon, noIcon: sel !== 'c' && !selData.icon,
         color: H(selData.hue), tag: selData.tag[lang], blurb: selData.blurb[lang],
-        features: selData.features[lang], url: selData.url, cta: t.cta,
+        features: selData.features[lang], hasFeatures: selData.features[lang].length > 0,
+        url: selData.url, hasLink: !!selData.url, noLink: !selData.url, cta: t.cta,
         host: selData.url.replace(/^https?:\/\//, ''), envLabel: em.label, dot: em.dot,
         bullet: { width: '9px', height: '9px', borderRadius: '3px', background: H(selData.hue), flex: 'none' }
       };
@@ -368,6 +567,11 @@ class Component extends DCLogic {
         padding: '13px', borderRadius: '13px', background: detail.color, color: 'oklch(0.16 0.02 265)',
         fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '15px'
       } : {},
+      soonStyle: {
+        marginTop: '24px', padding: '13px', borderRadius: '13px', textAlign: 'center',
+        border: '1px dashed oklch(0.40 0.02 265)', color: 'oklch(0.74 0.015 265)',
+        fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '15px'
+      },
       gridBtn: tabBtn(layout === 'grid'), radialBtn: tabBtn(layout === 'radial'),
       svBtn: tabBtn(lang === 'sv'), enBtn: tabBtn(lang === 'en'),
       setGrid: () => this.setState({ layout: 'grid', sel: null }),
