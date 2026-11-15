@@ -81,3 +81,10 @@ test('pusselsynken: workflow med synk, test, deploy-knuff och keepalive', () => 
   assert.ok(wf.includes('PLATFORM_READ_TOKEN'));
   assert.ok(wf.includes('/enable'), 'keepalive mot inaktivitetsavstängning saknas');
 });
+
+test('pusslet: zoomat pussel klipps i sin ram och detaljkortet ligger överst', () => {
+  // Utan klippningen växer det zoomade pusslet ut över detaljkortet och fångar
+  // klicken på "Öppna appen" (rapporterat av Magnus 2026-11-15).
+  assert.match(sajt, /<div data-pusselram style="[^"]*overflow:hidden/);
+  assert.match(sajt, /<aside style="position:relative;z-index:5;/);
+});
