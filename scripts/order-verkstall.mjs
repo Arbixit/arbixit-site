@@ -78,13 +78,15 @@ for (const order of aktuella) {
   let testOk = true;
   try {
     execSync('node scripts/build-apps.mjs && npm test', { stdio: 'pipe' });
-    git('add', '-A');
+    // Bara patchens egna filer är köade (apply --index) plus det genererade
+    // pusslet. Aldrig "git add -A": lösa filer i katalogen får inte följa med
+    // in i detta publika repo.
+    git('add', 'index.html');
   } catch {
     testOk = false;
   }
   if (!testOk) {
     git('reset', '--hard', '-q', 'HEAD');
-    git('clean', '-fdq');
     order.status = 'fel';
     notera(order, 'Publiceringen stoppades: sajtens tester gick inte igenom med ändringen. Allt rullades tillbaka.');
     await skrivOrder(token, order);

@@ -103,6 +103,7 @@ test('arbetsorder: workflows – intag utan AI, publicering efter godkännande',
   const kod = readFileSync(join(root, 'scripts', 'order-verkstall.mjs'), 'utf8');
   assert.ok(kod.includes("o.status === 'godkand'"), 'bara godkända order publiceras');
   assert.ok(kod.includes('sparradeSokvagar') && kod.includes('npm test'), 'spärrlista och tester kontrolleras före push');
+  assert.ok(!/'add',\s*'-A'/.test(kod) && !kod.includes("'clean'"), 'bara patchens filer får committas – inga lösa filer');
   const check = readFileSync(join(root, 'scripts', 'mail-check.mjs'), 'utf8');
   assert.ok(check.includes("text: arOrder ? ''"), 'orderinnehåll skrivs inte till AI-stegets katalog');
 });
