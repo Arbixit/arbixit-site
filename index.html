@@ -61,7 +61,7 @@ a:hover{color:oklch(0.88 0.10 255)}
 
     <div style="display:flex;gap:clamp(16px,3vw,40px);align-items:center;justify-content:center;margin-top:10px;flex-wrap:wrap">
       <div style="position:relative;flex:1 1 520px;max-width:660px;min-width:300px">
-        <div style="position:relative;width:100%;aspect-ratio:1;margin:0 auto">
+        <div data-pusselram style="position:relative;width:100%;aspect-ratio:1;margin:0 auto;overflow:hidden;border-radius:20px">
           <div style="{{ stageStyle }}">
             <svg viewBox="0 0 800 800" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
               <defs>
@@ -111,7 +111,7 @@ a:hover{color:oklch(0.88 0.10 255)}
       </div>
 
       <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
-        <aside style="flex:0 1 372px;min-width:300px;background:oklch(0.20 0.018 265);border:1px solid oklch(0.32 0.02 265);border-radius:22px;overflow:hidden;box-shadow:0 30px 70px -30px oklch(0 0 0 / 0.7)">
+        <aside style="position:relative;z-index:5;flex:0 1 372px;min-width:300px;background:oklch(0.20 0.018 265);border:1px solid oklch(0.32 0.02 265);border-radius:22px;overflow:hidden;box-shadow:0 30px 70px -30px oklch(0 0 0 / 0.7)">
           <div style="{{ accentBar }}"></div>
           <div style="padding:24px 24px 26px">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
