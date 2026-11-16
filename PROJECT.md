@@ -57,7 +57,19 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
     Internal`). Ordern sparas i SharePoint (00 Styrning/Arbetsorder) och får
     ett kvitto. Ordermejl når aldrig AI-steget här, och innehållet skrivs
     inte till disk. Ett svar "ok" på ett granskningsmejl sätter ordern till
-    godkänd; allt annat svar gör att ordern görs om.
+    godkänd; allt annat svar gör att ordern görs om. Bilder i mejlet
+    (bifogade eller inklistrade; png, jpg, gif, webp; högst 6 per mejl och
+    4 MB styck) sparas bredvid ordern så att arbetspasset ser dem.
+  - **Direktstart (sedan 2026-11-16).** GitHubs schema visade sig gå var
+    3:e–7:e timme i stället för var 30:e minut. Brevbärarens sista steg
+    startar därför nästa led själv: arbetspasset i `arbixit-brand` när en
+    order kommit in eller ska göras om, och pusselsynken när en order
+    godkänts. Att starta arbetspasset kräver secreten `DISPATCH_TOKEN`
+    (fine-grained PAT, Actions: read and write på enbart `arbixit-site` och
+    `arbixit-brand`); saknas den går arbetspasset på sitt schema.
+    Brevbäraren själv startas utifrån när ett mejl kommer (flöde hos
+    Microsoft, se PROJECT.md i `arbixit-brand`). Schemat ligger kvar som
+    reserv.
   - **Publicering** (`scripts/order-verkstall.mjs`, sista steget i
     pusselsynken): godkända order appliceras som patch, efter att
     spärrlistan och testerna kontrollerats en gång till. Bara patchens egna
@@ -115,7 +127,8 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
 - **Brevbäraren** (`.github/workflows/brevbararen.yml`) bevakar Arbixits
   delade Claude-postlåda (adressen ligger i Actions-secreten `MAIL_MAILBOX`).
   Den bor i detta publika repo eftersom Actions-minuter är kostnadsfria i
-  publika repon – pollningen kör var 30:e minut (~1 500 körningar/månad) och
+  publika repon – pollningen är inställd på var 30:e minut (i praktiken går
+  GitHubs schema betydligt glesare, se Direktstart ovan) och
   skulle ensam äta upp privata kontots fria kvot. Kollsteget är helt
   deterministiskt (`scripts/mail-check.mjs`, inga AI-anrop); AI-steget körs
   endast vid ny post, får inga hemligheter och skriver bara åtgärdsfiler.

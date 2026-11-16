@@ -18,14 +18,17 @@
 //     intygar är internt registreras som arbetsorder i SharePoint och får
 //     ett färdigt kvitto. De når aldrig AI-steget här – innehållet skrivs
 //     inte ens till --post. Se scripts/order.mjs.
+//     Bilder i ordermejlet sparas bredvid ordern i SharePoint.
 //
-// Skriver till GITHUB_OUTPUT: olasta=<antal nya>, aibehov=<antal till AI>.
+// Skriver till GITHUB_OUTPUT: olasta=<antal nya>, aibehov=<antal till AI>,
+// arbete=<order som väntar på arbetspass>, godkanda=<order som godkänts>.
 
 import { mkdir, writeFile, appendFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { getToken, graph, hamtaLogg, hanteradeIdn, kravEnv, arg, fail } from './graph.mjs';
 import {
   ordergivare, arArbetsorder, tolkaSvar, nastaNr, vantandeOrder, redanRegistrerat, lasOrdrar, skrivOrder,
+  bildbilagor, bilagefil, antalBilagor, skrivFil, ORDERMAPP,
 } from './order.mjs';
 
 const MAX_PER_KORNING = 5; // massutskicksskydd, se mejlpolicyn
@@ -65,6 +68,30 @@ let orderantal = 0;
 // Arbetsorder. Orderkön läses bara om det faktiskt kommit ett ordermejl.
 const givare = ordergivare();
 let ordrar = null;
+let arbete = 0; // order som nu väntar på arbetspasset
+let godkanda = 0; // order som just godkänts och ska publiceras
+// Startas nästa led direkt (se sista steget i workflowen) eller väntar det på schemat?
+const direkt = process.env.DIREKTSTART === 'true';
+const NAR = direkt ? 'Jag börjar med den direkt' : 'Jag tar den vid nästa arbetspass (det kan dröja några timmar)';
+
+/** Sparar mejlets bilder bredvid ordern. Ger filnamnen; innehållet loggas aldrig. */
+async function sparaBilagor(m, order) {
+  const res = await graph(token, `/users/${mailbox}/messages/${encodeURIComponent(m.id)}/attachments`);
+  const { bilder, overhoppade } = bildbilagor((await res.json()).value);
+  let lopnr = antalBilagor(order);
+  const filer = [];
+  for (const b of bilder) {
+    lopnr += 1;
+    const fil = bilagefil(order.nr, lopnr, b.andelse);
+    await skrivFil(token, `${ORDERMAPP}/${fil}`, b.data);
+    filer.push(fil);
+  }
+  return { filer, overhoppade };
+}
+const bilagetext = ({ filer, overhoppade }) =>
+  (filer.length ? ` ${filer.length === 1 ? 'Bilden' : `De ${filer.length} bilderna`} i mejlet följer med.` : '')
+  + (overhoppade ? ` ${overhoppade} ${overhoppade === 1 ? 'bilaga' : 'bilagor'} kunde jag inte ta med (bara bilder upp till 4 MB, högst 6 per mejl).` : '');
+
 async function registreraOrder(m, fran, amne) {
   ordrar ??= await lasOrdrar(token);
   if (redanRegistrerat(ordrar, m.internetMessageId)) {
@@ -79,19 +106,23 @@ async function registreraOrder(m, fran, amne) {
     const efterGranskning = order.status === 'granskning' && m.receivedDateTime > (order.granskningSkickad ?? '');
     const godkand = efterGranskning && tolkaSvar(svar) === 'godkand';
     const varFraga = order.status === 'fraga';
-    order.historik = [...(order.historik ?? []), { ...handelse, typ: godkand ? 'godkannande' : 'svar', text: svar }];
+    // Bilder i ett svar följer med när ordern ska göras om – inte vid ett rent ok.
+    const bil = godkand ? { filer: [], overhoppade: 0 } : await sparaBilagor(m, order);
+    order.historik = [...(order.historik ?? []), { ...handelse, typ: godkand ? 'godkannande' : 'svar', text: svar, ...(bil.filer.length ? { bilagor: bil.filer } : {}) }];
     order.mejlId = m.id;
     order.status = godkand ? 'godkand' : 'andring';
     if (godkand) { order.godkandAv = fran; order.godkandTid = nu; }
     await skrivOrder(token, order);
     if (godkand) {
+      godkanda += 1;
       return { atgard: 'svara', notis: `arbetsorder ${order.nr}: godkänd`,
-        svarstext: `Tack – order ${order.nr} är godkänd och publiceras vid nästa körning (ändringar på sajten normalt inom en timme). Du får en bekräftelse när den ligger ute.` };
+        svarstext: `Tack – order ${order.nr} är godkänd och publiceras ${direkt ? 'nu direkt' : 'vid nästa körning (det kan dröja några timmar)'}. Du får en bekräftelse när den ligger ute.` };
     }
+    arbete += 1;
     return { atgard: 'svara', notis: `arbetsorder ${order.nr}: ${varFraga ? 'svar på motfråga' : 'ändring begärd'}`,
       svarstext: varFraga
-        ? `Tack – jag fortsätter med order ${order.nr} utifrån ditt svar och återkommer med en granskning.`
-        : `Mottaget – jag gör om order ${order.nr} utifrån ditt svar och skickar en ny granskning. Ingenting är publicerat.` };
+        ? `Tack – jag fortsätter med order ${order.nr} utifrån ditt svar och återkommer med en granskning.${bilagetext(bil)}`
+        : `Mottaget – jag gör om order ${order.nr} utifrån ditt svar och skickar en ny granskning. Ingenting är publicerat.${bilagetext(bil)}` };
   }
   const ny = {
     nr: nastaNr(ordrar),
@@ -107,10 +138,13 @@ async function registreraOrder(m, fran, amne) {
     version: 0,
     historik: [],
   };
+  const bil = await sparaBilagor(m, ny);
+  if (bil.filer.length) ny.bilagor = bil.filer;
   await skrivOrder(token, ny);
   ordrar.push(ny);
+  arbete += 1;
   return { atgard: 'svara', notis: `arbetsorder ${ny.nr}: registrerad`,
-    svarstext: `Mottaget – jag har lagt det här som arbetsorder ${ny.nr}.\n\nJag tar den vid nästa arbetspass (var tredje timme på vardagar). Sedan får du ett mejl som beskriver vad jag gjort. Ingenting publiceras förrän du har svarat ok på det mejlet.` };
+    svarstext: `Mottaget – jag har lagt det här som arbetsorder ${ny.nr}.${bilagetext(bil)}\n\n${NAR}. Sedan får du ett mejl som beskriver vad jag gjort. Ingenting publiceras förrän du har svarat ok på det mejlet.` };
 }
 for (const m of mejl) {
   if (hanterade.has(m.internetMessageId)) {
@@ -157,5 +191,5 @@ for (const m of mejl) {
 
 console.log(`Nya olästa mejl: ${i} (till AI-steget: ${aibehov}, arbetsorder: ${orderantal}, redan hanterade: ${vantar})`);
 if (process.env.GITHUB_OUTPUT) {
-  await appendFile(process.env.GITHUB_OUTPUT, `olasta=${i}\naibehov=${aibehov}\n`);
+  await appendFile(process.env.GITHUB_OUTPUT, `olasta=${i}\naibehov=${aibehov}\narbete=${arbete}\ngodkanda=${godkanda}\n`);
 }
