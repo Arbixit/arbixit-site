@@ -60,13 +60,13 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
     godkänd; allt annat svar gör att ordern görs om. Bilder i mejlet
     (bifogade eller inklistrade; png, jpg, gif, webp; högst 6 per mejl och
     4 MB styck) sparas bredvid ordern så att arbetspasset ser dem.
-  - **Svar på utkastnotiser.** När utkast läggs i 05 For approval mejlar
-    biblioteket en notis per fil (ett flöde hos Microsoft, inte kod i våra
-    repon). Ett svar på en sådan notis ligger i notisens tråd, inte i
-    orderns. Bär en order i läget `session` utkastets mapp- eller filnamn i
-    fältet `utkast` kopplas svaret dit: "godkänt" ger läget `sessionklar`,
-    annat bokförs som kommentar. Pekas ingen eller flera order ut blir
-    svaret en vanlig ny order, som förut.
+  - **Svar på utkast från en arbetssession.** Utkastnotisen skickas i
+    orderns egen tråd (kommandot `utkast` i det privata repot), och ordern
+    står då i läget `session`. Ett svar i tråden bokförs på ordern:
+    "godkänt" ger läget `sessionklar`, annat blir en kommentar. Inget
+    publiceras av det – sessionsarbete läggs ut i en session. Svar på
+    bibliotekets äldre notiser (ämnet "Nytt utkast i 05 For approval") kopplas
+    via mappnamnet i orderns fält `utkast`, om exakt en order pekas ut.
   - **Direktstart (sedan 2026-11-16).** GitHubs schema visade sig gå var
     3:e–7:e timme i stället för var 30:e minut. Brevbärarens sista steg
     startar därför nästa led själv: arbetspasset i `arbixit-brand` när en
