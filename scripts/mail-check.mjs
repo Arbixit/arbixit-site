@@ -28,7 +28,7 @@ import { join } from 'node:path';
 import { getToken, graph, hamtaLogg, hanteradeIdn, kravEnv, arg, fail } from './graph.mjs';
 import {
   ordergivare, arArbetsorder, tolkaSvar, nastaNr, vantandeOrder, redanRegistrerat, lasOrdrar, skrivOrder,
-  bildbilagor, bilagefil, antalBilagor, skrivFil, ORDERMAPP,
+  bildbilagor, bilagefil, antalBilagor, skrivFil, ORDERMAPP, utkastOrder,
 } from './order.mjs';
 
 const MAX_PER_KORNING = 5; // massutskicksskydd, se mejlpolicyn
@@ -99,7 +99,21 @@ async function registreraOrder(m, fran, amne) {
   }
   const nu = new Date().toISOString();
   const handelse = { tid: m.receivedDateTime, fran, imid: m.internetMessageId };
-  const order = vantandeOrder(ordrar, m.conversationId);
+  // Svar på en utkastnotis från biblioteket hör till ordern som utkastet kom ur.
+  const viaUtkast = utkastOrder(ordrar, amne, m.body?.content);
+  if (viaUtkast?.status === 'session') {
+    // Arbetet gjordes i en arbetssession och verkställs där – här bokförs bara svaret.
+    const svar = (m.uniqueBody?.content ?? m.body?.content ?? '').slice(0, MAX_TEXT);
+    const godkand = tolkaSvar(svar) === 'godkand';
+    viaUtkast.historik = [...(viaUtkast.historik ?? []), { ...handelse, typ: godkand ? 'godkannande' : 'svar', text: svar, viaUtkast: true }];
+    if (godkand) { viaUtkast.status = 'sessionklar'; viaUtkast.godkandAv = fran; viaUtkast.godkandTid = nu; }
+    await skrivOrder(token, viaUtkast);
+    return { atgard: 'svara', notis: `arbetsorder ${viaUtkast.nr}: ${godkand ? 'utkast godkänt' : 'kommentar på utkast'} (via utkastnotis)`,
+      svarstext: godkand
+        ? `Tack – godkännandet är noterat på order ${viaUtkast.nr}. Det arbetet görs i en arbetssession och läggs ut därifrån; du får besked när det är publicerat.`
+        : `Tack – din kommentar är noterad på order ${viaUtkast.nr} och tas med när arbetet fortsätter i arbetssessionen. Ingenting är publicerat.` };
+  }
+  const order = vantandeOrder(ordrar, m.conversationId) ?? (viaUtkast?.status === 'granskning' ? viaUtkast : null);
   if (order) {
     // Svar på ett granskningsmejl eller en motfråga.
     const svar = (m.uniqueBody?.content ?? m.body?.content ?? '').slice(0, MAX_TEXT);

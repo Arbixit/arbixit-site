@@ -14,6 +14,8 @@
 //   (annat svar) │
 //             ▼  │
 //           andring          fraga = väntar på svar på en motfråga
+//                            session = tas i en arbetssession (t.ex. bildarbete)
+//                            sessionklar = sessionsarbetet godkänt, verkställs i session
 //                            rott  = kräver en uppdragsgivare själv
 //                            fel   = gick inte att genomföra
 //
@@ -68,6 +70,25 @@ export const orderfil = (nr) => `order-${String(nr).padStart(4, '0')}.json`;
 /** Hittar ordern som ett svar hör till: samma konversation och väntar på svar. */
 export function vantandeOrder(ordrar, konversation) {
   return ordrar.find((o) => o.konversation === konversation && ['granskning', 'fraga'].includes(o.status)) ?? null;
+}
+
+const UTKASTAMNE = /nytt utkast i 05 for approval/i;
+
+/**
+ * Hör mejlet till en order som tagits i en arbetssession? Utkast från en
+ * session läggs i 05 For approval, och biblioteket mejlar då en notis per
+ * fil. Ett svar på en sådan notis ligger i notisens tråd, inte i orderns –
+ * utan den här kopplingen blev svaret en ny, fristående order.
+ *
+ * Ordern bär namnen på sina utkast (mapp eller filer) i fältet "utkast".
+ * Svaret kopplas bara om ämnet är notisens och exakt en order pekas ut.
+ */
+export function utkastOrder(ordrar, amne, text) {
+  if (!UTKASTAMNE.test(String(amne ?? ''))) return null;
+  const ho = `${amne}\n${String(text ?? '').replace(/%20/g, ' ')}`;
+  const traffar = ordrar.filter((o) => ['session', 'granskning'].includes(o.status)
+    && (o.utkast ?? []).some((u) => typeof u === 'string' && u.trim().length >= 6 && ho.includes(u.trim())));
+  return traffar.length === 1 ? traffar[0] : null;
 }
 
 /** Har mejlet redan registrerats (som order eller som svar)? */
