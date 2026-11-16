@@ -171,7 +171,10 @@ och behörighetsavtalet samt mandatmodell v1 (godkänd 2026-07-20).
    Task-registreringen är klar sedan 2026-08-16.
 2. Byt in `arbore-sf-sv.svg` som header-logga när filen finns i underlaget.
 3. Ersätt prototypens platshållartexter per app i `data/editorial.json`
-   (gult flöde – utkast till 05 For approval) och lägg ikoner för crm,
-   fineprint och postiljon. Länkarna är klara: de kommer från dashboarden.
+   (gult flöde – utkast till 05 For approval). Länkarna är klara: de kommer
+   från dashboarden. Ikoner för crm, fineprint och postiljon lades in
+   2026-11-16 (arbetsorder 3, godkänd per mejl): pusselbit i appens färg med
+   vit glyf, genererade ur ikonmallen i det privata profilrepot. Fineprints
+   violetta är provisorisk tills brandboken låser paletten.
 4. Lighthouse-, axe- och länkkontroll i CI.
 5. Bygg ut layouten när de publika apparna blir fler än åtta.
