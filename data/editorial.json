@@ -2,13 +2,13 @@
   "_kommentar": "Redaktionellt lager för pusslet på arbixit.se. Nyckeln är appens namn i Arbixit-dashboardens tabell 'Aktiva projekt'. Status och länk kommer ALDRIG härifrån – de hämtas från dashboarden av scripts/build-apps.mjs. Här ligger bara det dashboarden inte vet: visningsnamn, färg (hue), initialer, ikon och texter. Sätt \"public\": false för att hålla en app borta från sajten. Nya texter är gult flöde (utkast → godkännande).",
   "apps": {
     "crm": {
-      "id": "crm", "name": "CRM", "hue": 250, "mono": "Cr",
+      "id": "crm", "name": "CRM", "hue": 250, "mono": "Cr", "icon": "icons/crm.png",
       "tag": { "sv": "Kundregister & pipeline", "en": "CRM & pipeline" },
       "blurb": { "sv": "Samla kontakter, affärer och uppföljning på ett och samma ställe.", "en": "Contacts, deals and follow-ups gathered in one place." },
       "features": { "sv": ["Kontakt- & företagsregister", "Visuell affärspipeline", "Aktiviteter & påminnelser", "Rapporter & prognoser"], "en": ["Contact & company records", "Visual deal pipeline", "Activities & reminders", "Reports & forecasts"] }
     },
     "fineprint": {
-      "id": "fineprint", "name": "Fineprint", "hue": 292, "mono": "Fp",
+      "id": "fineprint", "name": "Fineprint", "hue": 292, "mono": "Fp", "icon": "icons/fineprint.png",
       "tag": { "sv": "Dokument & avtal", "en": "Documents & contracts" },
       "blurb": { "sv": "Skapa, granska och signera dokument utifrån färdiga mallar.", "en": "Create, review and sign documents from ready-made templates." },
       "features": { "sv": ["Dokumentmallar", "Versionshantering", "PDF-generering", "Digital signering"], "en": ["Document templates", "Version history", "PDF generation", "Digital signing"] }
@@ -20,7 +20,7 @@
       "features": { "sv": ["Live sensordata", "Underhållsscheman", "Digitala checklistor", "Larm & notiser"], "en": ["Live sensor data", "Maintenance schedules", "Digital checklists", "Alerts & notifications"] }
     },
     "Postiljon": {
-      "id": "postiljon", "name": "Postiljon", "hue": 72, "mono": "Po",
+      "id": "postiljon", "name": "Postiljon", "hue": 72, "mono": "Po", "icon": "icons/postiljon.png",
       "tag": { "sv": "Utskick & notiser", "en": "Messaging & notifications" },
       "blurb": { "sv": "Skicka e-post och SMS med mallar och robust köhantering.", "en": "Send email and SMS with templates and robust queueing." },
       "features": { "sv": ["E-post & SMS", "Meddelandemallar", "Köhantering", "Leveransstatus"], "en": ["Email & SMS", "Message templates", "Queue handling", "Delivery status"] }
