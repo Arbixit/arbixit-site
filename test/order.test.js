@@ -159,5 +159,11 @@ test('arbetsorder: svar på en utkastnotis kopplas till ordern som utkastet kom 
   assert.equal(utkastOrder(ordrar, amne, text + ' 2026-12-01 Arbixit Brandbok utkast'), null, 'två möjliga order – hellre ingen koppling än fel');
   assert.equal(utkastOrder([{ nr: 1, status: 'session', utkast: ['abc', '', 7] }], amne, 'abc'), null, 'för korta eller trasiga namn räknas inte');
   const check = readFileSync(join(root, 'scripts', 'mail-check.mjs'), 'utf8');
-  assert.ok(check.includes("viaUtkast.status = 'sessionklar'"));
+  assert.ok(check.includes("session.status = 'sessionklar'"));
+  const { sessionsOrder } = await import('../scripts/order.mjs');
+  const iTrad = [{ nr: 3, status: 'session', konversation: 'k3', utkastSkickat: '2026-11-16T10:00:00Z' }, { nr: 4, status: 'session', konversation: 'k4' }, { nr: 5, status: 'klar', konversation: 'k5', utkastSkickat: 'x' }];
+  assert.equal(sessionsOrder(iTrad, 'k3').nr, 3, 'svar i orderns tråd efter skickad utkastnotis');
+  assert.equal(sessionsOrder(iTrad, 'k4'), null, 'ingen utkastnotis skickad – svaret blir en vanlig order');
+  assert.equal(sessionsOrder(iTrad, 'k5'), null, 'avslutad order');
+  assert.ok(check.includes("m.receivedDateTime > (session.utkastSkickat ?? '')"), 'ett ja före utkastet räknas inte');
 });

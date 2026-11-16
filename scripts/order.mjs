@@ -91,6 +91,14 @@ export function utkastOrder(ordrar, amne, text) {
   return traffar.length === 1 ? traffar[0] : null;
 }
 
+/**
+ * Ordern som tagits i en arbetssession och vars utkastnotis skickats i
+ * orderns egen tråd – ett svar i den tråden hör dit.
+ */
+export function sessionsOrder(ordrar, konversation) {
+  return ordrar.find((o) => o.konversation === konversation && o.status === 'session' && !!o.utkastSkickat) ?? null;
+}
+
 /** Har mejlet redan registrerats (som order eller som svar)? */
 export function redanRegistrerat(ordrar, imid) {
   return ordrar.some((o) => o.imid === imid || (o.historik ?? []).some((h) => h.imid === imid));
