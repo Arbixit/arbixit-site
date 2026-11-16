@@ -15,7 +15,7 @@
     },
     "PlantTools": {
       "id": "planttools", "name": "PlantTools", "hue": 150, "mono": "Pt", "icon": "icons/planttools.png",
-      "tag": { "sv": "Drift & anläggning", "en": "Operations & assets" },
+      "tag": { "sv": "Verktyg för växtinredning", "en": "Tools for interior plantscaping" },
       "blurb": { "sv": "Håll koll på anläggningar, sensorer och underhåll i realtid.", "en": "Keep track of assets, sensors and maintenance in real time." },
       "features": { "sv": ["Live sensordata", "Underhållsscheman", "Digitala checklistor", "Larm & notiser"], "en": ["Live sensor data", "Maintenance schedules", "Digital checklists", "Alerts & notifications"] }
     },
