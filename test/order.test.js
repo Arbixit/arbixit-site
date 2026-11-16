@@ -141,3 +141,23 @@ test('arbetsorder: brevbäraren startar nästa led direkt, utan att AI-steget f�
   const check = readFileSync(join(root, 'scripts', 'mail-check.mjs'), 'utf8');
   assert.ok(check.includes('arbete=${arbete}') && check.includes('godkanda=${godkanda}'));
 });
+
+test('arbetsorder: svar på en utkastnotis kopplas till ordern som utkastet kom ur', async () => {
+  const { utkastOrder } = await import('../scripts/order.mjs');
+  const ordrar = [
+    { nr: 3, status: 'session', utkast: ['2026-11-16 Arbixit Applogor forslag'] },
+    { nr: 8, status: 'session', utkast: ['2026-12-01 Arbixit Brandbok utkast'] },
+    { nr: 9, status: 'klar', utkast: ['2026-10-01 Gammalt utkast'] },
+    { nr: 10, status: 'session' },
+  ];
+  const amne = 'Sv: Nytt utkast i 05 For approval: 00 Oversikt.png';
+  const text = 'Godkänt\n\nhttps://exempel.invalid/05%20For%20approval/2026-11-16%20Arbixit%20Applogor%20forslag/00%20Oversikt.png';
+  assert.equal(utkastOrder(ordrar, amne, text).nr, 3);
+  assert.equal(utkastOrder(ordrar, 'Uppgift', text), null, 'bara svar på notisen kopplas – en ny order som nämner mappen förblir en ny order');
+  assert.equal(utkastOrder(ordrar, amne, 'Godkänt'), null, 'ingen order pekas ut');
+  assert.equal(utkastOrder(ordrar, amne, 'x 2026-10-01 Gammalt utkast'), null, 'avslutade order tar inte emot svar');
+  assert.equal(utkastOrder(ordrar, amne, text + ' 2026-12-01 Arbixit Brandbok utkast'), null, 'två möjliga order – hellre ingen koppling än fel');
+  assert.equal(utkastOrder([{ nr: 1, status: 'session', utkast: ['abc', '', 7] }], amne, 'abc'), null, 'för korta eller trasiga namn räknas inte');
+  const check = readFileSync(join(root, 'scripts', 'mail-check.mjs'), 'utf8');
+  assert.ok(check.includes("viaUtkast.status = 'sessionklar'"));
+});
