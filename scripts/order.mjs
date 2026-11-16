@@ -102,6 +102,38 @@ export function allaDelarKlara(order) {
   return (!p.site || !!a.site) && (!p.brand || !!a.brand);
 }
 
+const BILDTYPER = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif', 'image/webp': 'webp' };
+export const MAX_BILAGOR = 6;
+export const MAX_BILAGA_BYTE = 4 * 1024 * 1024;
+
+/**
+ * Bilderna i ett ordermejl (bifogade eller inklistrade) som ska följa med
+ * ordern. Bara vanliga bildformat, högst MAX_BILAGOR stycken och
+ * MAX_BILAGA_BYTE per bild – allt annat hoppas över och räknas.
+ * Tar Graphs attachments-lista, ger { bilder: [{ typ, andelse, data }], overhoppade }.
+ */
+export function bildbilagor(attachments) {
+  const bilder = [];
+  let overhoppade = 0;
+  for (const a of attachments ?? []) {
+    const andelse = BILDTYPER[String(a.contentType ?? '').toLowerCase().split(';')[0].trim()];
+    const data = a.contentBytes ? Buffer.from(a.contentBytes, 'base64') : null;
+    if (!andelse || !data || data.length === 0 || data.length > MAX_BILAGA_BYTE || bilder.length >= MAX_BILAGOR) {
+      overhoppade += 1;
+      continue;
+    }
+    bilder.push({ typ: a.contentType.toLowerCase().split(';')[0].trim(), andelse, data });
+  }
+  return { bilder, overhoppade };
+}
+
+/** Filnamnet för en bilaga i orderkön. lopnr är unikt per order (fortsätter över svar). */
+export const bilagefil = (nr, lopnr, andelse) => `order-${String(nr).padStart(4, '0')}.bilaga-${lopnr}.${andelse}`;
+
+/** Antal bilagor som redan hör till ordern (i ordern själv och i svaren). */
+export const antalBilagor = (order) =>
+  (order.bilagor ?? []).length + (order.historik ?? []).reduce((n, h) => n + (h.bilagor ?? []).length, 0);
+
 /** En rad, utan styrtecken – för commit-meddelanden. */
 export const enRad = (s, max = 72) => String(s ?? '').replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 

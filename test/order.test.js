@@ -107,3 +107,37 @@ test('arbetsorder: workflows – intag utan AI, publicering efter godkännande',
   const check = readFileSync(join(root, 'scripts', 'mail-check.mjs'), 'utf8');
   assert.ok(check.includes("text: arOrder ? ''"), 'orderinnehåll skrivs inte till AI-stegets katalog');
 });
+
+test('arbetsorder: bara bilder följer med ordern, med tak på antal och storlek', async () => {
+  const { bildbilagor, bilagefil, antalBilagor, MAX_BILAGOR, MAX_BILAGA_BYTE } = await import('../scripts/order.mjs');
+  const b64 = (n) => Buffer.alloc(n, 1).toString('base64');
+  const { bilder, overhoppade } = bildbilagor([
+    { contentType: 'image/png', contentBytes: b64(10) },
+    { contentType: 'IMAGE/JPEG; name=x', contentBytes: b64(10) },
+    { contentType: 'application/pdf', contentBytes: b64(10) },
+    { contentType: 'image/svg+xml', contentBytes: b64(10) }, // kan bära skript – tas inte med
+    { contentType: 'image/png', contentBytes: b64(MAX_BILAGA_BYTE + 1) },
+    { contentType: 'image/png' }, // referensbilaga utan innehåll
+  ]);
+  assert.deepEqual(bilder.map((b) => b.andelse), ['png', 'jpg']);
+  assert.equal(overhoppade, 4);
+  const manga = bildbilagor(Array.from({ length: MAX_BILAGOR + 2 }, () => ({ contentType: 'image/png', contentBytes: b64(4) })));
+  assert.equal(manga.bilder.length, MAX_BILAGOR);
+  assert.equal(manga.overhoppade, 2);
+  assert.deepEqual(bildbilagor(undefined), { bilder: [], overhoppade: 0 });
+  assert.equal(bilagefil(3, 2, 'png'), 'order-0003.bilaga-2.png');
+  assert.equal(antalBilagor({ bilagor: ['a'], historik: [{ bilagor: ['b', 'c'] }, { text: 'x' }] }), 3);
+  assert.equal(antalBilagor({}), 0);
+});
+
+test('arbetsorder: brevbäraren startar nästa led direkt, utan att AI-steget får nyckeln', () => {
+  const brev = readFileSync(join(root, '.github', 'workflows', 'brevbararen.yml'), 'utf8');
+  const aiSteg = brev.slice(brev.indexOf('uses: anthropics/claude-code-action'), brev.indexOf('Svara, markera läst och logga'));
+  assert.ok(!aiSteg.includes('DISPATCH_TOKEN'), 'AI-steget får aldrig startnyckeln');
+  const start = brev.slice(brev.indexOf('Starta nästa led direkt'));
+  assert.ok(start.includes('gh workflow run pusselsynk.yml') && start.includes('gh workflow run arbetspass.yml'));
+  assert.ok(start.includes("steps.kolla.outputs.arbete != '0' || steps.kolla.outputs.godkanda != '0'"), 'startar bara när det finns något att göra');
+  assert.ok(/schedule:\s*\n\s*- cron:/.test(brev), 'schemat ligger kvar som reserv');
+  const check = readFileSync(join(root, 'scripts', 'mail-check.mjs'), 'utf8');
+  assert.ok(check.includes('arbete=${arbete}') && check.includes('godkanda=${godkanda}'));
+});
